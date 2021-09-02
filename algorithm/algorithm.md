@@ -1,4 +1,4 @@
-# **HJ1** **字符串最后一个单词的长度**
+# 1、**HJ1** **字符串最后一个单词的长度**
 
 ```golang
 // 描述
@@ -45,7 +45,7 @@ func main() {
 
 ```
 
-# **HJ1** **字符串最后一个单词的长度**
+# 2、**HJ1** **字符串最后一个单词的长度**
 
 ```golang
 //描述
@@ -119,7 +119,7 @@ func main() {
 }
 ```
 
-# **HJ3** **明明的随机数**
+# 3、**HJ3** **明明的随机数**
 
 ```golang
 //描述
@@ -222,7 +222,7 @@ func main() {
 }
 ```
 
-# **HJ4** **字符串分隔**
+# 4、**HJ4** **字符串分隔**
 
 ```golang
 // 描述
@@ -272,7 +272,7 @@ func main() {
 }
 ```
 
-# **HJ5** **进制转换**
+# 5、**HJ5** **进制转换**
 
 ```golang
 // 描述
@@ -310,7 +310,7 @@ func main() {
 
 ```
 
-# **HJ6** **质数因子**
+# 6、**HJ6** **质数因子**
 
 ```golang
 // 描述
@@ -358,7 +358,7 @@ func main() {
 }
 ```
 
-# **HJ7** **取近似值**
+# 7、**HJ7** **取近似值**
 
 ```golang
 // 描述
@@ -399,6 +399,337 @@ func main() {
 	}
 }
 ```
+
+# 8、**HJ8** **合并表记录**
+
+```golang
+// 描述
+数据表记录包含表索引和数值（int范围的正整数），请对表索引相同的记录进行合并，即将相同索引的数值进行求和运算，输出按照key值升序进行输出。
+// 输入描述：
+先输入键值对的个数
+然后输入成对的index和value值，以空格隔开
+// 输出描述：
+输出合并后的键值对（多行）
+
+//输入：
+4
+0 1
+0 2
+1 2
+3 4
+
+//输出：
+0 3
+1 2
+3 4
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	line := 0
+	flag := 0
+	mp := make(map[int]int)
+	var is []int
+	for sanner.Scan() {
+		if line == 0 {
+			input := sanner.Text()
+			inputToint, _ := strconv.Atoi(input)
+			line = inputToint
+			continue
+		}
+		input := sanner.Text()
+		key := strings.Split(input, " ")[0]
+		keyToint, _ := strconv.Atoi(key)
+		value := strings.Split(input, " ")[1]
+		valueToint, _ := strconv.Atoi(value)
+		if _, ok := mp[keyToint]; ok {
+			mp[keyToint] = mp[keyToint] + valueToint
+		} else {
+			mp[keyToint] = valueToint
+		}
+		flag++
+		if flag == line {
+			for k := range mp {
+				is = append(is, k)
+			}
+			sort.Ints(is)
+			for _, i := range is {
+				fmt.Println(i, mp[i])
+			}
+			line = 0
+			flag = 0
+			mp = map[int]int{}
+			is = []int{}
+		}
+	}
+}
+```
+
+# 9、**HJ9** **提取不重复的整数**
+
+```golang
+// 描述
+输入一个int型整数，按照从右向左的阅读顺序，返回一个不含重复数字的新的整数。
+保证输入的整数最后一位不是0。
+// 输入描述：
+输入一个int型整数
+// 输出描述：
+按照从右向左的阅读顺序，返回一个不含重复数字的新的整数
+
+// 示例1
+// 输入：
+9876673
+// 输出：
+37689
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		ret := ""
+		mp := make(map[string]string)
+		l := len(input)
+		for i := l - 1; i >= 0; i-- {
+			if _, ok := mp[string(input[i])]; ok {
+				continue
+			} else {
+				ret = ret + string(input[i])
+				mp[string(input[i])] = "stb"
+			}
+		}
+		fmt.Println(ret)
+	}
+}
+
+```
+
+# 10、**HJ10** **字符个数统计**
+
+```golang
+// 描述
+编写一个函数，计算字符串中含有的不同字符的个数。字符在ASCII码范围内(0~127，包括0和127)，换行表示结束符，不算在字符里。不在范围内的不作统计。多个相同的字符只计算一次
+例如，对于字符串abaca而言，有a、b、c三种不同的字符，因此输出3。
+// 输入描述：
+输入一行没有空格的字符串。
+
+// 输出描述：
+输出 输入字符串 中范围在(0~127，包括0和127)字符的种数。
+示例1
+// 输入：
+abc
+// 输出：
+3
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		mp := make(map[string]string)
+		for _, s := range input {
+			if _, ok := mp[string(s)]; ok {
+				continue
+			} else {
+				mp[string(s)] = "stb"
+			}
+		}
+		fmt.Println(len(mp))
+
+	}
+}
+```
+
+# 11、**HJ11** **数字颠倒**
+
+```golang
+// 描述
+输入一个整数，将这个整数以字符串的形式逆序输出
+程序不考虑负数的情况，若数字含有0，则逆序形式也含有0，如输入为100，则输出为001
+// 输入描述：
+输入一个int整数
+// 输出描述：
+将这个整数以字符串的形式逆序输出
+
+// 输入：
+1516000
+// 输出：
+0006151
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		l := len(input)
+		ret := ""
+		for i := l - 1; i >= 0; i-- {
+			ret = ret + string(input[i])
+		}
+		fmt.Println(ret)
+	}
+}
+
+```
+
+# 12、**HJ12** **字符串反转**
+
+```golang
+// 描述
+接受一个只包含小写字母的字符串，然后输出该字符串反转后的字符串。（字符串长度不超过1000）
+
+// 输入描述：
+输入一行，为一个只包含小写字母的字符串。
+
+// 输出描述：
+输出该字符串反转后的字符串。
+
+// 输入：
+abcd
+// 输出：
+dcba
+
+// code 
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		l := len(input)
+		ret := ""
+		for i := l - 1; i >= 0; i-- {
+			ret = ret + string(input[i])
+		}
+		fmt.Println(ret)
+	}
+}
+```
+
+# 13 、**HJ13** **句子逆序**
+
+```golang
+// 描述
+将一个英文语句以单词为单位逆序排放。例如“I am a boy”，逆序排放后为“boy a am I”
+所有单词之间用一个空格隔开，语句中除了英文字母外，不再包含其他字符
+
+// 输入描述：
+输入一个英文语句，每个单词用空格隔开。保证输入只包含空格和字母。
+
+// 输出描述：
+得到逆序的句子
+
+// 输入：
+I am a boy
+// 输出：
+boy a am I
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		s := strings.Split(input, " ")
+		l := len(s)
+		ret := ""
+		for i := l - 1; i >= 0; i-- {
+			if i == 0{
+				ret = ret + s[i]
+			}else {
+				ret = ret + s[i]+" "
+			}
+		}
+		fmt.Println(ret)
+	}
+}
+```
+
+# 14、**HJ14** **字符串排序**
+
+```golang
+// 描述
+给定n个字符串，请对n个字符串按照字典序排列。
+// 输入描述：
+输入第一行为一个正整数n(1≤n≤1000),下面n行为n个字符串(字符串长度≤100),字符串中只含有大小写字母。
+// 输出描述：
+数据输出n行，输出结果为按照字典序排列的字符串。
+
+//输入：
+9
+cap
+to
+cat
+card
+two
+too
+up
+boat
+boot
+
+//输出：
+boat
+boot
+cap
+card
+cat
+to
+too
+two
+up
+
+```
+
+
 
 
 
