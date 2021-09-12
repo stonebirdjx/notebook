@@ -727,7 +727,1152 @@ too
 two
 up
 
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"sort"
+	"strconv"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	line := 0
+	var ss []string
+	for sanner.Scan() {
+		input := sanner.Text()
+		if line == 0 {
+			inputToint, _ := strconv.Atoi(input)
+			line = inputToint
+			continue
+		}
+		ss = append(ss, input)
+		l := len(ss)
+		if l == line {
+			sort.Strings(ss)
+			for i := 0; i < l; i++ {
+				fmt.Println(ss[i])
+			}
+			line = 0
+			ss = []string{}
+		}
+	}
+}
 ```
+
+# 15、**HJ15** **求int型正整数在内存中存储时1的个数**
+
+```golang
+// 描述
+输入一个int型的正整数，计算出该int型数据在内存中存储时1的个数。
+// 输入描述：
+输入一个整数（int类型）
+//输出描述：
+这个数转换成2进制后，输出1的个数
+// 输入：
+5
+// 输出：
+2
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		inputToInt, _ := strconv.Atoi(input)
+		s := strconv.FormatInt(int64(inputToInt), 2)
+		count := 0
+		for _, i := range s {
+			if i == '1' {
+				count++
+			}
+		}
+		fmt.Println(count)
+		count = 0
+	}
+}
+```
+
+# 16、**HJ16** **购物单**（待实现）
+
+```golang
+// 分为两类：主件与附件，附件是从属于某个主件的，下表就是一些主件与附件的例子：
+// 主件	附件
+电脑	打印机，扫描仪
+书柜	图书
+书桌	台灯，文具
+工作椅	无
+	// 如果要买归类为附件的物品，必须先买该附件所属的主件。
+每个主件可以有 0 个、 1 个或 2 个附件。附件不再有从属于自己的附件。王强想买的东西很多，为了不超出预算，他把每件物品规定了一个重要度，分为 5 等：用整数 1 ~ 5 表示，第 5 等最重要。他还从因特网上查到了每件物品的价格（都是 10 元的整数倍）。他希望在不超过 N 元（可以等于 N 元）的前提下，//使每件物品的价格与重要度的乘积的总和最大。
+    设第 j 件物品的价格为 v[j] ，重要度为 w[j] ，共选中了 k 件物品，编号依次为 j 1 ， j 2 ，……， j k ，则所求的总和为：
+v[j 1 ]*w[j 1 ]+v[j 2 ]*w[j 2 ]+ … +v[j k ]*w[j k ] 。（其中 * 为乘号）
+    请你帮助王强设计一个满足要求的购物单。
+ 
+// 输入描述：
+输入的第 1 行，为两个正整数，用一个空格隔开：N m
+（其中 N （ <32000 ）表示总钱数， m （ <60 ）为希望购买物品的个数。）
+	//从第 2 行到第 m+1 行，第 j 行给出了编号为 j-1 的物品的基本数据，每行有 3 个非负整数 v p q
+（其中 v 表示该物品的价格（ v<10000 ）， p 表示该物品的重要度（ 1 ~ 5 ）， q 表示该物品是主件还是附件。
+	//如果 q=0 ，表示该物品为主件，如果 q>0 ，表示该物品为附件， q 是所属主件的编号）
+ 
+// 输出描述：
+ 输出文件只有一个正整数，为不超过总钱数的物品的价格与重要度乘积的总和的最大值（ <200000 ）。
+// 示例1
+// 输入：
+1000 5
+800 2 0
+400 5 1
+300 5 1
+400 3 0
+500 2 0
+// 输出：
+2200
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	line := 0
+	tm, tn, ret := 0, 0, 0
+	var is [][4]int
+	for sanner.Scan() {
+		input := sanner.Text()
+		if line == 0 {
+			inputs := strings.Split(input, " ")
+			tm, _ = strconv.Atoi(inputs[0])
+			tn, _ = strconv.Atoi(inputs[1])
+			line++
+			break
+		}
+		inputs := strings.Split(input, " ")
+		v, _ := strconv.Atoi(inputs[0])
+		p, _ := strconv.Atoi(inputs[1])
+		q, _ := strconv.Atoi(inputs[2])
+		s := v * p
+		tmp := [4]int{v, p, q, s}
+		is = append(is, tmp)
+		l := len(is)
+		if l == tn {
+			// 待实现
+			fmt.Println(ret)
+		}
+	}
+}
+```
+
+# 17、**HJ17** **坐标移动**
+
+```golang
+// 描述
+开发一个坐标计算工具， A表示向左移动，D表示向右移动，W表示向上移动，S表示向下移动。从（0,0）点开始移动，从输入字符串里面读取一些坐标，并将最终输入结果输出到输出文件里面。
+// 输入：
+合法坐标为A(或者D或者W或者S) + 数字（两位以内）
+坐标之间以;分隔。
+非法坐标点需要进行丢弃。如AA10;  A1A;  $%$;  YAD; 等。
+下面是一个简单的例子 如：
+A10;S20;W10;D30;X;A1A;B10A11;;A10;
+//处理过程：
+起点（0,0）
++   A10   =  （-10,0）
++   S20   =  (-10,-20)
++   W10  =  (-10,-10)
++   D30  =  (20,-10)
++   x    =  无效
++   A1A   =  无效
++   B10A11   =  无效
++  一个空 不影响
++   A10  =  (10,-10)
+结果 （10， -10）
+注意请处理多组输入输出
+// 输入描述：
+一行字符串
+// 输出描述：
+最终坐标，以逗号分隔
+// 输入：
+A10;S20;W10;D30;X;A1A;B10A11;;A10;
+//输出：
+10,-10
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	x, y := 0, 0
+	for sanner.Scan() {
+		input := sanner.Text()
+		is := strings.Split(input, ";")
+		reg, err := regexp.Compile(`^[A|D|S|W][0-9]{1,2}$`)
+		if err != nil {
+			continue
+		}
+		for _, s := range is {
+			ss := reg.FindAllString(s, -1)
+			if len(ss) != 1 {
+				continue
+			}
+			flag := ss[0]
+			f := string(flag[0])
+			tmp := ""
+			for _, i := range flag[1:] {
+				tmp = tmp + string(i)
+			}
+			num, _ := strconv.Atoi(tmp)
+			switch f {
+			case "A":
+				x = x - num
+			case "D":
+				x = x + num
+			case "S":
+				y = y - num
+			case "W":
+				y = y + num
+			}
+		}
+		fmt.Printf("%d,%d\n", x, y)
+		x, y = 0, 0
+	}
+}
+
+```
+
+# 18、**HJ18** **识别有效的IP地址和掩码并进行分类统计**（待实现）
+
+```golang
+// 描述
+请解析IP地址和对应的掩码，进行分类识别。要求按照A/B/C/D/E类地址归类，不合法的地址和掩码单独归类。
+所有的IP地址划分为 A,B,C,D,E五类
+A类地址1.0.0.0~126.255.255.255;
+B类地址128.0.0.0~191.255.255.255;
+C类地址192.0.0.0~223.255.255.255;
+D类地址224.0.0.0~239.255.255.255；
+E类地址240.0.0.0~255.255.255.255
+
+// 私网IP范围是：
+10.0.0.0～10.255.255.255
+172.16.0.0～172.31.255.255
+192.168.0.0～192.168.255.255
+子网掩码为二进制下前面是连续的1，然后全是0。（例如：255.255.255.32就是一个非法的掩码）
+注意二进制下全是1或者全是0均为非法
+
+注意：
+1. 类似于【0.*.*.*】和【127.*.*.*】的IP地址不属于上述输入的任意一类，也不属于不合法ip地址，计数时可以忽略
+2. 私有IP地址和A,B,C,D,E类地址是不冲突的
+
+输入描述：
+多行字符串。每行一个IP地址和掩码，用~隔开。
+
+输出描述：
+统计A、B、C、D、E、错误IP地址或错误掩码、私有IP的个数，之间以空格隔开。
+
+示例1
+输入：
+10.70.44.68~255.254.255.0
+1.0.0.1~255.0.0.0
+192.168.0.2~255.255.255.0
+19..0.~255.255.255.0
+复制
+输出：
+1 0 1 0 0 2 1
+
+```
+
+# 19、**HJ19** **简单错误记录**
+
+```golang
+// 描述
+开发一个简单错误记录功能小模块，能够记录出错的代码所在的文件名称和行号。
+// 处理：
+1、 记录最多8条错误记录，循环记录，最后只用输出最后出现的八条错误记录。对相同的错误记录只记录一条，但是错误计数增加。最后一个斜杠后面的带后缀名的部分（保留最后16位）和行号完全匹配的记录才做算是”相同“的错误记录。
+2、 超过16个字符的文件名称，只记录文件的最后有效16个字符；
+3、 输入的文件可能带路径，记录文件名称不能带路径。
+4、循环记录时，只以第一次出现的顺序为准，后面重复的不会更新它的出现时间，仍以第一次为准
+// 输入描述：
+每组只包含一个测试用例。一个测试用例包含一行或多行字符串。每行包括带路径文件名称，行号，以空格隔开。
+// 输出描述：
+将所有的记录统计并将结果输出，格式：文件名 代码行数 数目，一个空格隔开，如：
+
+// 输入：
+D:\zwtymj\xccb\ljj\cqzlyaszjvlsjmkwoqijggmybr 645
+E:\je\rzuwnjvnuz 633
+C:\km\tgjwpb\gy\atl 637
+F:\weioj\hadd\connsh\rwyfvzsopsuiqjnr 647
+E:\ns\mfwj\wqkoki\eez 648
+D:\cfmwafhhgeyawnool 649
+E:\czt\opwip\osnll\c 637
+G:\nt\f 633
+F:\fop\ywzqaop 631
+F:\yay\jc\ywzqaop 631
+// 输出：
+rzuwnjvnuz 633 1
+atl 637 1
+rwyfvzsopsuiqjnr 647 1
+eez 648 1
+fmwafhhgeyawnool 649 1
+c 637 1
+f 633 1
+ywzqaop 631 2
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+)
+
+var ss []string
+var mp = make(map[string]int)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	go func() {
+		for sanner.Scan() {
+			input := sanner.Text()
+			p := strings.Split(input, " ")[0]
+			pSplit := strings.Split(p,`\`)
+			pb := pSplit[len(pSplit)-1]
+			l := len(pb)
+			if l > 16 {
+				pb = pb[l-16:]
+			}
+			line := strings.Split(input, " ")[1]
+			key := pb + " " + line
+			if _, ok := mp[key]; ok {
+				mp[key]++
+			} else {
+				mp[key] = 1
+				ss = append(ss, key)
+			}
+		}
+	}()
+	select {
+	case <-time.After(time.Millisecond):
+	}
+	ls := len(ss)
+	if ls > 8 {
+		ss = ss[ls-8:]
+	}
+	for _, key := range ss {
+		fmt.Printf("%s %d\n",key,mp[key])
+	}
+}
+```
+
+# 20、HJ20 **密码验证合格程序**
+
+```golang
+// 描述
+// 密码要求:
+1.长度超过8位
+2.包括大小写字母.数字.其它符号,以上四种至少三种
+3.不能有相同长度大于2的子串重复
+// 输入描述：
+一组或多组长度超过2的字符串。每组占一行
+// 输出描述：
+如果符合要求输出：OK，否则输出NG
+// 输入：
+021Abc9000
+021Abc9Abc1
+021ABC9000
+021$bc9000
+// 输出：
+OK
+NG
+NG
+OK
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"regexp"
+	"strings"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		if len(input) < 9 {
+			fmt.Println("NG")
+			continue
+		}
+		ret := reg(input)
+		if ret < 3 {
+			fmt.Println("NG")
+			continue
+		}
+		if noRepeat(input) {
+			fmt.Println("OK")
+		}else {
+			fmt.Println("NG")
+		}
+	}
+}
+
+func noRepeat(str string) bool {
+	c := ""
+	for _, i := range str {
+		if len(c) < 3 {
+			c = c + string(i)
+		}
+		if len(c)  == 3 {
+			if strings.Count(str,c) > 1 {
+				return false
+			}
+			c = string(c[1])+string(c[2])
+		}
+	}
+	return true
+}
+
+func reg(str string) int {
+	ret := 0
+	reg := regexp.MustCompile(`[A-Z]`)
+	if reg.FindString(str) != "" {
+		ret++
+	}
+	reg = regexp.MustCompile(`[a-z]`)
+	if reg.FindString(str) != "" {
+		ret++
+	}
+	reg = regexp.MustCompile(`[0-9]`)
+	if reg.FindString(str) != "" {
+		ret++
+	}
+	reg = regexp.MustCompile(`[^A-Za-z0-9]`)
+	if reg.FindString(str) != "" {
+		ret++
+	}
+	return ret
+}
+```
+
+# 21、**HJ21** **简单密码**
+
+```golang
+// 描述
+密码是我们生活中非常重要的东东，我们的那么一点不能说的秘密就全靠它了。哇哈哈. 接下来渊子要在密码之上再加一套密码，虽然简单但也安全。
+假设渊子原来一个BBS上的密码为zvbo9441987,为了方便记忆，他通过一种算法把这个密码变换成YUANzhi1987，这个密码是他的名字和出生年份，怎么忘都忘不了，而且可以明目张胆地放在显眼的地方而不被别人知道真正的密码。
+他是这么变换的，大家都知道手机上的字母： 1--1， abc--2, def--3, ghi--4, jkl--5, mno--6, pqrs--7, tuv--8 wxyz--9, 0--0,就这么简单，渊子把密码中出现的小写字母都变成对应的数字，数字和其他的符号都不做变换，
+声明：密码中没有空格，而密码中出现的大写字母则变成小写之后往后移一位，如：X，先变成小写，再往后移一位，不就是y了嘛，简单吧。记住，z往后移是a哦。
+
+// 输入描述：
+输入包括多个测试数据。输入是一个明文，密码长度不超过100个字符，输入直到文件结尾
+
+// 输出描述：
+输出渊子真正的密文
+
+// 输入：
+YUANzhi1987
+
+// 输出：
+zvbo9441987
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		ret := ""
+		for _, i := range input {
+			switch {
+			case i >= 'A' && i < 'Z':
+				i = i + 33
+				ret = ret + string(i)
+			case i == 'Z':
+				ret = ret + "a"
+			case i >= 'a' && i <= 'c':
+				ret = ret + "2"
+			case i >= 'd' && i <= 'f':
+				ret = ret + "3"
+			case i >= 'g' && i <= 'i':
+				ret = ret + "4"
+			case i >= 'j' && i <= 'l':
+				ret = ret + "5"
+			case i >= 'm' && i <= 'o':
+				ret = ret + "6"
+			case i >= 'p' && i <= 's':
+				ret = ret + "7"
+			case i >= 't' && i <= 'v':
+				ret = ret + "8"
+			case i >= 'w' && i <= 'z':
+				ret = ret + "9"
+			default:
+				ret = ret + string(i)
+			}
+		}
+		fmt.Println(ret)
+	}
+}
+```
+
+# 22、**HJ22** **汽水瓶**
+
+```golang
+// 描述
+有这样一道智力题：“某商店规定：三个空汽水瓶可以换一瓶汽水。小张手上有十个空汽水瓶，她最多可以换多少瓶汽水喝？”答案是5瓶，方法如下：先用9个空瓶子换3瓶汽水，喝掉3瓶满的，喝完以后4个空瓶子，用3个再换一瓶，喝掉这瓶满的，这时候剩2个空瓶子。然后你让老板先借给你一瓶汽水，喝掉这瓶满的，喝完以后用3个空瓶子换一瓶满的还给老板。如果小张手上有n个空汽水瓶，最多可以换多少瓶汽水喝？
+// 输入描述：
+输入文件最多包含10组测试数据，每个数据占一行，仅包含一个正整数n（1<=n<=100），表示小张手上的空汽水瓶数。n=0表示输入结束，你的程序不应当处理这一行。
+
+// 输出描述：
+对于每组测试数据，输出一行，表示最多可以喝的汽水瓶数。如果一瓶也喝不到，输出0。
+
+// 输入：
+3
+10
+81
+0 
+
+// 输出：
+1
+5
+40
+// code 
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func main() {
+	sanner := bufio.NewScanner(os.Stdin)
+	for sanner.Scan() {
+		input := sanner.Text()
+		i, _ := strconv.Atoi(input)
+		if i == 0 {
+			continue
+		}
+		fmt.Println(buy(i))
+
+	}
+}
+
+func buy(i int) int {
+	ret := i / 3
+	s := i%3 + ret
+	if s > 2 {
+		ret = ret + buy(s)
+	}
+	if s == 2 {
+		ret = ret + 1
+	}
+	return ret
+}
+```
+
+# 23、括号
+
+```golang
+// 括号。设计一种算法，打印n对括号的所有合法的（例如，开闭一一对应）组合。
+说明：解集不能包含重复的子集。
+例如，给出 n = 3，生成结果为：
+["((()))", "(()())","(())()","()(())","()()()"]
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+var ret []string
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		i, _ := strconv.Atoi(input)
+		ret = []string{}
+		dfs(i,i,i,"")
+		fmt.Println(ret)
+	}
+}
+
+func dfs(n, l, r int, group string) {
+	if len(group) == n*2 {
+		ret = append(ret, group)
+		return
+	}
+	if l > 0 {
+		dfs(n, l-1, r, group+"(")
+	}
+	if l < r && r > 0 {
+		dfs(n, l, r-1, group+")")
+	}
+}
+```
+
+# 24、Go实现二叉树(重要)
+
+```golang
+// 树本身就具有有序性，所以你不必另外对其进行排序。只要插入到了正确的位置，那么树就能保持有序。
+// code
+package main
+
+import "fmt"
+
+type tree struct {
+	l *tree
+	r *tree
+	v int
+}
+
+func main() {
+	t := new(tree)
+	for i := 0; i < 50; i++ {
+		t = insert(t,i)
+	}
+	view(t)
+}
+
+func insert(t *tree, v int) *tree {
+	if t == nil {
+		return &tree{nil, nil, v}
+	}
+	if v == t.v {
+		return t
+	}
+	if v < t.v {
+		t.l = insert(t.l, v)
+		return t
+	}
+	t.r = insert(t.r, v)
+	return t
+
+}
+
+func view(t *tree) {
+	if t == nil {
+		return
+	}
+	view(t.l)
+	fmt.Println(t.v)
+	view(t.r)
+}
+```
+
+# 25、Go实现Hash表(重要)
+
+```golang
+// 大量数据查找的应用
+// code
+package main
+
+import "fmt"
+
+type hash struct {
+	v    int
+	next *hash
+}
+
+type hashTable struct {
+	table map[int]*hash
+	size  int
+}
+
+func hashFunc(i, size int) int {
+	return (i % size)
+}
+
+func insert(ht *hashTable, value int) int {
+	index := hashFunc(value, ht.size)
+	element := hash{v: value, next: ht.table[index]}
+	ht.table[index] = &element
+	return index
+}
+
+func view(ht *hashTable){
+	for k := range ht.table {
+		if ht.table[k] != nil {
+			t := ht.table[k]
+			for t != nil {
+				fmt.Printf("%d -> ", t.v)
+				t = t.next
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func main() {
+	Size := 15
+	table := make(map[int]*hash, Size)
+	hash := &hashTable{table: table, size: Size}
+	fmt.Println("Numbder of spaces:", hash.size)
+	for i := 0; i < 120; i++ {
+		insert(hash, i)
+	}
+	view(hash)
+}
+
+```
+
+# 26、Go语言实现链表(重要)
+
+```go
+// 链表的优点
+链表不仅可以对数据排序，还可以在插入和删除元素之后保持数据的有序性。//如果频繁删除数据，那么相对于哈希表和二叉树，使用链表是一个更好的选择。
+package main
+
+import "fmt"
+
+type Node struct {
+	Value int
+	Next  *Node
+}
+
+// 双向链表
+//type Node struct {
+//    Value    int
+//    Previous *Node
+//    Next     *Node
+//}
+
+var root = new(Node)
+
+func addNode(t *Node, v int) int {
+	if root == nil {
+		t = &Node{v, nil}
+		root = t
+		return 0
+	}
+
+	if v == t.Value {
+		fmt.Println("Node already exists:", v)
+		return -1
+	}
+
+	if t.Next == nil {
+		t.Next = &Node{v, nil}
+		return -2
+	}
+
+	return addNode(t.Next, v)
+}
+
+func lookupNode(t *Node, v int) bool {
+	if root == nil {
+		t = &Node{v, nil}
+		root = t
+		return false
+	}
+
+	if v == t.Value {
+		return true
+	}
+
+	if t.Next == nil {
+		return false
+	}
+
+	return lookupNode(t.Next, v)
+}
+
+func size(t *Node) int {
+	if t == nil {
+		fmt.Println("-> Empty list!")
+		return 0
+	}
+
+	i := 0
+	for t != nil {
+		i++
+		t = t.Next
+	}
+	return i
+}
+func traverse(t *Node) {
+	if t == nil {
+		fmt.Println("-> Empty list!")
+		return
+	}
+
+	for t != nil {
+		fmt.Printf("%d -> ", t.Value)
+		t = t.Next
+	}
+	fmt.Println()
+}
+func main() {
+	fmt.Println(root)
+	root = nil
+	traverse(root)
+	addNode(root, 1)
+	addNode(root, -1)
+	traverse(root)
+	addNode(root, 10)
+	addNode(root, 5)
+	addNode(root, 45)
+	addNode(root, 5)
+	addNode(root, 5)
+	traverse(root)
+	addNode(root, 100)
+	traverse(root)
+
+	if lookupNode(root, 100) {
+		fmt.Println("Node exists!")
+	} else {
+		fmt.Println("Node does not exist!")
+	}
+
+	if lookupNode(root, -100) {
+		fmt.Println("Node exists!")
+	} else {
+		fmt.Println("Node does not exist!")
+	}
+}
+
+```
+
+# 27、Go语音实现队列(重要)
+
+```go
+package main
+
+import "fmt"
+
+type Node struct {
+	Value int
+	Next  *Node
+}
+
+var size = 0
+var queue = new(Node)
+
+func Push(t *Node, v int) bool {
+	if queue == nil {
+		queue = &Node{v, nil}
+		size++
+		return true
+	}
+
+	t = &Node{v, nil}
+	t.Next = queue
+	queue = t
+	size++
+
+	return true
+}
+
+func Pop(t *Node) (int, bool) {
+	if size == 0 {
+		return 0, false
+	}
+
+	if size == 1 {
+		queue = nil
+		size--
+		return t.Value, true
+	}
+
+	temp := t
+	for (t.Next) != nil {
+		temp = t
+		t = t.Next
+	}
+
+	v := (temp.Next).Value
+	temp.Next = nil
+
+	size--
+	return v, true
+}
+
+func traverse(t *Node) {
+	if size == 0 {
+		fmt.Println("Empty Queue!")
+		return
+	}
+
+	for t != nil {
+		fmt.Printf("%d -> ", t.Value)
+		t = t.Next
+	}
+	fmt.Println()
+}
+
+func main() {
+	queue = nil
+	Push(queue, 10)
+	fmt.Println("Size:", size)
+	traverse(queue)
+
+	v, b := Pop(queue)
+	if b {
+		fmt.Println("Pop:", v)
+	}
+	fmt.Println("Size:", size)
+
+	for i := 0; i < 5; i++ {
+		Push(queue, i)
+	}
+	traverse(queue)
+	fmt.Println("Size:", size)
+
+	v, b = Pop(queue)
+	if b {
+		fmt.Println("Pop:", v)
+	}
+	fmt.Println("Size:", size)
+
+	v, b = Pop(queue)
+	if b {
+		fmt.Println("Pop:", v)
+	}
+	fmt.Println("Size:", size)
+	traverse(queue)
+}
+```
+
+# 28、Go语音实现栈(重要)
+
+```go
+package main
+
+import "fmt"
+
+type Node struct {
+	Value int
+	Next  *Node
+}
+
+var size = 0
+var stack = new(Node)
+
+func Push(v int) bool {
+	if stack == nil {
+		stack = &Node{v, nil}
+		size = 1
+		return true
+	}
+
+	temp := &Node{v, nil}
+	temp.Next = stack
+	stack = temp
+	size++
+	return true
+}
+
+func Pop(t *Node) (int, bool) {
+	if size == 0 {
+		return 0, false
+	}
+
+	if size == 1 {
+		size = 0
+		stack = nil
+		return t.Value, true
+	}
+
+	stack = stack.Next
+	size--
+	return t.Value, true
+}
+
+func traverse(t *Node) {
+	if size == 0 {
+		fmt.Println("Empty Stack!")
+		return
+	}
+
+	for t != nil {
+		fmt.Printf("%d -> ", t.Value)
+		t = t.Next
+	}
+	fmt.Println()
+}
+
+
+func main() {
+	stack = nil
+	v, b := Pop(stack)
+	if b {
+		fmt.Print(v, " ")
+	} else {
+		fmt.Println("Pop() failed!")
+	}
+	Push(100)
+	traverse(stack)
+	Push(200)
+	traverse(stack)
+
+	for i := 0; i < 10; i++ {
+		Push(i)
+	}
+
+	for i := 0; i < 15; i++ {
+		v, b := Pop(stack)
+		if b {
+			fmt.Print(v, " ")
+		} else {
+			break
+		}
+	}
+	fmt.Println()
+	traverse(stack)
+}
+```
+
+# 29、 **HJ23** **删除字符串中出现次数最少的字符**
+
+```go
+// 描述
+实现删除字符串中出现次数最少的字符，若多个字符出现次数一样，则都删除。输出删除这些单词后的字符串，字符串中其它字符保持原来的顺序。
+注意每个输入文件有多组输入，即多个字符串用回车隔开
+// 输入描述：
+字符串只包含小写英文字母, 不考虑非法输入，输入的字符串长度小于等于20个字节。
+// 输出描述：
+删除字符串中出现次数最少的字符后的字符串。
+// 输入：
+abcdd
+aabcddd
+
+// 输出：
+dd
+aaddd
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"sort"
+	"strings"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		ret := ""
+		mp := make(map[string]int)
+		for _, i := range input {
+			if _, ok := mp[string(i)]; ok {
+				continue
+			}
+			n := strings.Count(input, string(i))
+			mp[string(i)] = n
+		}
+		//tmp
+		tmp := make(map[int]string)
+		for k, v := range mp {
+			if _, ok := tmp[v]; ok {
+				tmp[v] = tmp[v] + "|" + k
+			} else {
+				tmp[v] = k
+			}
+		}
+		// slice 排序
+		var s []int
+		for k := range tmp {
+			s = append(s, k)
+		}
+		l := len(s)
+		if l > 0 {
+			sort.Ints(s)
+			less := s[0]
+			str := tmp[less]
+			strs := strings.Split(str, "|")
+			for _, i := range input {
+				flag := false
+				for _, s := range strs {
+					if s == string(i) {
+						flag = true
+						continue
+					}
+				}
+				if flag {
+					continue
+				}
+				ret = ret +string(i)
+			}
+		}
+		fmt.Println(ret)
+	}
+}
+```
+
+# 30、**HJ26** **字符串排序**
+
+```golang
+// 描述
+编写一个程序，将输入字符串中的字符按如下规则排序。
+规则 1 ：英文字母从 A 到 Z 排列，不区分大小写。
+如，输入： Type 输出： epTy
+规则 2 ：同一个英文字母的大小写同时存在时，按照输入顺序排列。
+如，输入： BabA 输出： aABb
+规则 3 ：非英文字母的其它字符保持原来的位置。
+如，输入： By?e 输出： Be?y
+注意有多组测试数据，即输入有多行，每一行单独处理（换行符隔开的表示不同行）
+
+// 输入描述：
+输入字符串
+// 输出描述：
+输出字符串
+输入：
+A Famous Saying: Much Ado About Nothing (2012/8).
+输出：
+A aaAAbc dFgghh: iimM nNn oooos Sttuuuy (2012/8).
+
+// code
+
+
+```
+
+
 
 
 
