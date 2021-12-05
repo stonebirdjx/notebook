@@ -1845,7 +1845,7 @@ func main() {
 }
 ```
 
-# 30、**HJ26** **字符串排序**
+# 30、**HJ26** **字符串排序**（待实现）
 
 ```golang
 // 描述
@@ -1871,6 +1871,787 @@ A aaAAbc dFgghh: iimM nNn oooos Sttuuuy (2012/8).
 
 
 ```
+
+# 31、**HJ29** **字符串加解密**
+
+```golang
+// 描述
+1、对输入的字符串进行加解密，并输出。
+2、加密方法为：
+当内容是英文字母时则用该英文字母的后一个字母替换，同时字母变换大小写,如字母a时则替换为B；字母Z时则替换为a；
+当内容是数字时则把该数字加1，如0替换1，1替换2，9替换0；
+其他字符不做变化。
+3、解密方法为加密的逆过程。
+本题含有多组样例输入。
+//输入说明
+输入一串要加密的密码
+输入一串加过密的密码
+// 输出说明
+输出加密后的字符
+输出解密后的字符
+输入：
+abcdefg
+BCDEFGH
+输出：
+BCDEFGH
+abcdefg
+
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	isAdd := true
+	for bs.Scan() {
+		input := bs.Text()
+		if isAdd {
+			ret := add(input)
+			fmt.Println(ret)
+			isAdd = false
+			continue
+		}
+		ret := down(input)
+		fmt.Println(ret)
+		isAdd = true
+	}
+}
+
+func down(str string) string {
+	s := ""
+	for _, i := range str {
+		switch{
+		case i > 'a' && i <= 'z':
+			s = s + string(i-33)
+		case i == 'a':
+			s = s + "Z"
+		case i > 'A' && i <='Z':
+			s = s + string(i+31)
+		case i == 'A':
+			s = s + "z"
+
+		case i > '0' && i <= '9':
+			s = s + string(i-1)
+		case i == '0':
+			s = s + "9"
+		}
+	}
+	return s
+}
+
+func add(str string) string {
+	s := ""
+	for _, i := range str {
+		switch {
+		case i >= 'a' && i < 'z':
+			s = s + string(i-31)
+		case i == 'z':
+			s = s + "A"
+		case i >= 'A' && i < 'Z':
+			s = s + string(i+33)
+		case i == 'Z':
+			s = s + "a"
+		case i >= '0' && i < '9':
+			s = s + string(i+1)
+		case i == '9':
+			s = s + "0"
+		}
+	}
+	return s
+}
+```
+
+# 31、**HJ108** **求最小公倍数**
+
+```go
+// 描述
+正整数A和正整数B 的最小公倍数是指 能被A和B整除的最小的正整数值，设计一个算法，求输入A和B的最小公倍数。
+// 输入描述：
+输入两个正整数A和B。
+// 输出描述：
+输出A和B的最小公倍数。
+// 输入：
+5 7
+// 输出：
+35
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		s := strings.Split(input, " ")
+		be, _ := strconv.Atoi(s[0])
+		af, _ := strconv.Atoi(s[1])
+		min := be * af
+		for i := 1; i <= be * af; i ++ {
+			if i %  be == 0 && i % af == 0  && i < min{
+				min = i
+
+			}
+		}
+		fmt.Println(min)
+	}
+}
+```
+
+# 32、**NC19** **子数组的最大累加和问题**
+
+```go
+给定一个数组arr，返回子数组的最大累加和
+例如，arr = [1, -2, 3, 5, -2, 6, -1]，所有子数组中，[3, 5, -2, 6]可以累加出最大的和12，所以返回12.
+题目保证没有全为负数的数据
+// [要求]
+时间复杂度为O(n)O(n)，空间复杂度为O(1)O(1)
+// 输入：
+[1, -2, 3, 5, -2, 6, -1]
+// 返回值：
+12
+
+// code
+package main
+
+import "fmt"
+
+/**
+ * max sum of the subarray
+ * @param arr int整型一维数组 the array
+ * @return int整型
+ */
+
+func main() {
+	arr := []int{1, -2, 3, 5, -2, 6, -1}
+	fmt.Println(maxsumofSubarray(arr))
+
+}
+
+func maxsumofSubarray(arr []int) int {
+	// write code here
+	dp := make([]int, len(arr))
+	ret := arr[0]
+	dp[0] = ret
+	l := len(arr)
+	for i := 1; i < l; i++ {
+		if dp[i-1] > 0 {
+			dp[i] = dp[i-1] + arr[i]
+		} else {
+			dp[i] = arr[i]
+		}
+		ret = max(ret,dp[i])
+	}
+	return ret
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+# 33、NC59 矩阵的最小路径和
+
+```golang
+// 描述
+给定一个 n * m 的矩阵 a，从左上角开始每次只能向右或者向下走，最后到达右下角的位置，路径上所有的数字累加起来就是路径和，输出所有的路径中最小的路径和。
+示例1
+// 输入：
+[[1,3,5,9],[8,1,3,4],[5,0,6,1],[8,8,4,0]]
+// 返回值：
+12
+
+// code
+package main
+
+import (
+	"fmt"
+)
+
+/**
+ *
+ * @param matrix int整型二维数组 the matrix
+ * @return int整型
+ */
+
+var res = 0
+
+func main() {
+	matrix := [][]int{
+		{1, 3, 5, 9},
+		{8, 1, 3, 4},
+		{5, 0, 6, 1},
+		{8, 8, 4, 0},
+	}
+	fmt.Println(minPathSum(matrix))
+}
+
+func minPathSum(matrix [][]int) int {
+	// write code here
+	dp(0, 0, matrix, 0)
+	return res
+}
+
+func dp(w, h int, matrix [][]int, ret int) {
+	ret = ret + matrix[w][h]
+	if w == len(matrix)-1 && h == len(matrix[0])-1 {
+		if res == 0 {
+			res = ret
+		}else if ret < res {
+			res = ret
+		}
+	}
+	if w < len(matrix)-1 {
+		dp(w+1, h, matrix, ret)
+	}
+	if h < len(matrix[0])-1 {
+		dp(w, h+1, matrix, ret)
+	}
+}
+
+```
+
+# 34、**HJ31** **单词倒排**
+
+```golang
+// 描述
+对字符串中的所有单词进行倒排。
+说明：
+1、构成单词的字符只有26个大写或小写英文字母；
+2、非构成单词的字符均视为单词间隔符；
+3、要求倒排后的单词间隔符以一个空格表示；如果原字符串中相邻单词间有多个间隔符时，倒排转换后也只允许出现一个空格间隔符；
+4、每个单词最长20个字母；
+
+// 输入描述：
+输入一行以空格来分隔的句子
+// 输出描述：
+输出句子的逆序
+
+// 输入：
+I am a student
+// 输出：
+student a am I
+
+ // code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		ret := ""
+		for _, i := range input {
+			switch {
+			case i >= 'A' && i <= 'Z':
+				ret = ret + string(i)
+			case i >= 'a' && i <= 'z':
+				ret = ret + string(i)
+			default:
+				ret = ret + "|"
+			}
+		}
+		rets := strings.Split(ret, "|")
+		l := len(rets)
+		res := ""
+		for i := l - 1; i >= 0; i-- {
+			if rets[i] == "" {
+				continue
+			} else {
+				if res == "" {
+					res = rets[i]
+				} else {
+					res = res + " " + rets[i]
+				}
+			}
+
+		}
+		fmt.Println(res)
+	}
+}
+```
+
+# 35、**HJ81** **字符串字符匹配**
+
+```golang
+// 描述
+判断短字符串中的所有字符是否在长字符串中全部出现。
+请注意本题有多组样例输入。
+
+// 输入描述：
+输入两个字符串。第一个为短字符串，第二个为长字符串。两个字符串均由小写字母组成。
+
+// 输出描述：
+如果短字符串的所有字符均在长字符串中出现过，则输出true。否则输出false。
+
+// 输入：
+bc
+abc
+
+?// 输出：
+true
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	before := ""
+	after := ""
+	for bs.Scan() {
+		input := bs.Text()
+		if before == "" {
+			before = input
+			continue
+		}
+		after = input
+		for _, i := range before {
+			flag := false
+			for _, j := range after {
+				if i == j {
+					flag = true
+					break
+				}
+			}
+			if !flag {
+				fmt.Println(false)
+				goto loop
+			}
+		}
+		fmt.Println(true)
+	loop:
+		before = ""
+		after = ""
+	}
+}
+```
+
+# 36 、**HJ85** **最长回文子串**
+
+```golang
+// 描述
+给定一个仅包含小写字母的字符串，求它的最长回文子串的长度。
+所谓回文串，指左右对称的字符串。
+所谓子串，指一个字符串删掉其部分前缀和后缀（也可以不删）的字符串
+（注意：记得加上while处理多个测试用例）
+
+// 输入描述：
+输入一个仅包含小写字母的字符串
+// 输出描述：
+返回最长回文子串的长度
+
+//输入：
+cdabbacc
+// 输出：
+4
+// 说明：
+abba为最长的回文子串 
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		if len(input) < 2 {
+			fmt.Println(len(input))
+			continue
+		}
+		length := len(input)
+
+		dp := make([][]bool, length)
+		for i := 0; i < length; i++ {
+			dp[i] = make([]bool, length)
+		}
+		maxGap := 0
+		var ans string
+		//子串的长度（从0到length不断扩张）
+		for gap := 0; gap < length; gap++ {
+			//子串开始位置，从第一个位置开始滑动窗口比较
+			for start := 0; start + gap < length; start++ {
+				//子串结束位置
+				end := start + gap
+				flag := false
+				if gap == 0 {
+					//子串长度为1，即单个字符肯定为回文子串
+					dp[start][end] = true
+					flag = true
+				} else if gap == 1 {
+					//子串长度为2，只需比较两个字符是否相等即可，相等为回文子串
+					if input[start] == input[end] {
+						dp[start][end] = true
+						flag = true
+					}
+				} else {
+					//子串长度>2，则利用状态转移方程求解
+					if dp[start+1][end-1] && input[start] == input[end] {
+						dp[start][end] = true
+						flag = true
+					}
+				}
+				if flag {
+					//记录最大距离
+					if end - start + 1 > maxGap {
+						maxGap = start - end + 1
+						ans = input[start:end+1]
+					}
+				}
+			}
+		}
+		fmt.Println(len(ans))
+	}
+}
+```
+
+# 37、**HJ86** **求最大连续bit数**
+
+```go
+// 描述
+求一个byte数字对应的二进制数字中1的最大连续数，例如3的二进制为00000011，最大连续2个1
+本题含有多组样例输入。
+// 输入描述：
+输入一个byte数字
+// 输出描述：
+输出转成二进制之后连续1的个数
+示例1
+// 输入：
+3
+5
+// 输出：
+2
+1
+// 说明：
+3的二进制表示是11，最多有2个连续的1。
+5的二进制表示是101，最多只有1个连续的1。 
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		i, _ := strconv.ParseInt(input, 10, 64)
+		s := strconv.FormatInt(i, 2)
+		ret := 0
+		tmp := 0
+		for _, b := range s {
+			if b == '1' {
+				tmp++
+			}
+			if b == '0' {
+				if ret < tmp {
+					ret = tmp
+				}
+				tmp = 0
+			}
+		}
+		if ret < tmp {
+			ret = tmp
+		}
+		tmp = 0
+		fmt.Println(ret)
+	}
+}
+```
+
+ # 38、时效缓存
+
+```golang
+// 实现一个时效缓存系统
+// 存入时：
+//		当key 值存在时，直接更新value
+//		当key不存在时，容量未满时直接存在
+//		当key不存在时，容量满时删除冷门数据再存入
+
+// 取出时：
+// key存在直接取，key不存在返回-1
+package main
+
+import "fmt"
+
+type value struct {
+	val int
+	hot int
+}
+
+type cache struct {
+	capacity int
+	mp       map[string]*value
+}
+
+func main() {
+	c := newCache(2)
+	c.put("1",1)
+	c.put("1",0)
+	c.put("2",2)
+	c.put("3",3)
+	fmt.Println(c.get("1"))
+	fmt.Println(c.get("2"))
+	fmt.Println(c.get("3"))
+}
+
+func (c *cache) get(key string) int {
+	if _, ok := c.mp[key]; ok {
+		c.mp[key].hot++
+		return c.mp[key].val
+	}
+	return -1
+}
+
+func (c *cache) put(key string, val int) {
+	// key 在map 里，直接更新val ，hot++
+	if _, ok := c.mp[key]; ok {
+		c.mp[key].val = val
+		c.mp[key].hot++
+		return
+	}
+	if len(c.mp) < c.capacity {
+		// 容量未满时，直接插入
+		v := new(value)
+		v.val = val
+		c.mp[key] = v
+	} else {
+		// 容量满时
+		tmpKey := ""
+		tmpHot := -1
+		for k, c := range c.mp {
+			if tmpHot == -1 && tmpKey == "" {
+				tmpKey = k
+				tmpHot = c.hot
+				continue
+			}
+			if c.hot < tmpHot {
+				tmpKey = k
+				tmpHot = c.hot
+			}
+		}
+		delete(c.mp, tmpKey)
+		v := new(value)
+		v.val = val
+		c.mp[key] = v
+	}
+}
+
+func newCache(i int) *cache {
+	c := new(cache)
+	mp := make(map[string]*value)
+	c.capacity = i
+	c.mp = mp
+	return c
+}
+```
+
+# 39、括号匹配
+
+```golang
+package main
+
+import "fmt"
+
+/*
+给定一个字符串，里边可能包含“()”, “[]”, “{}”括号，请编写程序检查该字符串的括号是否闭合。例如，
+1.	"()" yes；
+2.	")(" no;
+3.	"(()" no;
+4.	"{}()" yes;
+5.	"{()}" yes;
+6.	"{(})" no.
+*/
+
+func main() {
+	s := "{()}"
+	var tmp []string
+	for _, i := range s {
+		switch {
+		case i == '{' || i == '[' || i == '(':
+			tmp = append(tmp, string(i))
+		case i == '}':
+			l := len(tmp)
+			if l == 0 {
+				fmt.Println("no")
+				return
+			}
+			if tmp[l-1] != "{" {
+				fmt.Println("no")
+				return
+			}
+			tmp = tmp[:l-1]
+		case i == ']':
+			l := len(tmp)
+			if l == 0 {
+				fmt.Println("no")
+				return
+			}
+			if tmp[l-1] != "[" {
+				fmt.Println("no")
+				return
+			}
+			tmp = tmp[:l-1]
+		case i == ')':
+			l := len(tmp)
+			if l == 0 {
+				fmt.Println("no")
+				return
+			}
+			if tmp[l-1] != "(" {
+				fmt.Println("no")
+				return
+			}
+			tmp = tmp[:l-1]
+		}
+	}
+	fmt.Println("yes")
+}
+```
+
+# 40、挑7
+
+```golang
+// 描述
+输出7有关数字的个数，包括7的倍数，还有包含7的数字（如17，27，37...70，71，72，73...）的个数（一组测试用例里可能有多组数据，请注意处理）
+
+// 输入描述：
+一个正整数N。(N不大于30000)
+
+// 输出描述：
+不大于N的与7有关的数字个数，例如输入20，与7有关的数字包括7,14,17.
+
+输入：
+20
+10
+输出：
+3
+1
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	for bs.Scan() {
+		input := bs.Text()
+		ret := 0
+		inputInt, _ := strconv.Atoi(input)
+		for i := 1; i <= inputInt; i++ {
+			if i%7 == 0 {
+				ret++
+			} else {
+				str := strconv.Itoa(i)
+				loop:for _,stri := range str{
+					switch stri {
+					case '7' :
+						ret++
+						break loop
+					}
+				}
+			}
+		}
+		fmt.Println(ret)
+	}
+}
+```
+
+# 41、高精度加法
+
+```golang
+// 描述
+输入两个用字符串表示的整数，求它们所表示的数之和。
+字符串的长度不超过10000。
+本题含有多组样例输入。
+
+// 输入描述：
+输入两个字符串。保证字符串只含有'0'~'9'字符
+
+// 输出描述：
+输出求和后的结果
+
+示例1
+输入：
+9876543210
+1234567890
+输出：
+11111111100
+
+// code
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"math/big"
+	"os"
+)
+
+func main() {
+	bs := bufio.NewScanner(os.Stdin)
+	flag := true
+	l1 := new(big.Int)
+	l2 := new(big.Int)
+	for bs.Scan() {
+		input := bs.Text()
+		if flag {
+			l1.SetString(input,10)
+			flag = false
+			continue
+		}
+		l2.SetString(input,10)
+		s := l1.Add(l1,l2)
+		fmt.Println(s.String())
+		flag = true
+		l1 = new(big.Int)
+		l2 = new(big.Int)
+	}
+}s
+```
+
+
 
 
 

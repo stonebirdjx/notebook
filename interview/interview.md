@@ -178,11 +178,71 @@ CARP	合成/聚合复用原则	尽量使用合成/聚合，而不是通过继承
 LOD	迪米特法则	一个软件实体应当尽可能少的与其他实体发生相互作用
 ```
 
+# 14、TCP与UDP的区别
+
+```golang
+1、TCP基于连接有三次握手与UPD无连接；
+2、对系统资源的要求（TCP较多，UDP少）；
+3、UDP程序结构较简单；
+4、流模式与数据报模式 ；
+5、TCP保证数据正确性，UDP可能丢包；
+6、TCP保证数据顺序，UDP不保证。
+```
+
+# golang 面试题合集
+
+```golang
+// GMP模型
+G(goroutine)是Go语言中并发的执行单位。 Goroutine底层是使用协程(coroutine)实现，coroutine是一种运行在用户态的用户线程（参考操作系统原理：内核态，用户态）它可以由语言和框架层调度。
+
+M(Machine)指go语言对一个关联的内核线程的封装。
+
+P(Processor)是一个抽象的概念，代表了Machine所需的上下文环境，是处理用户级代码逻辑的处理器。可以使用runtime.GOMAXPROCS(MaxProcs)来指定Processor数量。
+
+对应关系：一个Machine会对应一个内核线程（K），同时会有一个Processor与它绑定。一个Processor连接一个或者多个Goroutine。Processor有一个运行时的Goroutine（上图中绿色的G），其它的Goroutine处于等待状态。
+	// K(内核线程) -> M -> P (M与P一对多) -> G(P与G一对多，一个P只能运行一个G)
+	
+Go语言中通过GMP模型实现了对CPU和内存的合理利用，使得用户在不用担心内存的情况下体验到线程的好处。虽说协程的空间很小，但是也需要关注一下协程的生命周期，防止过多的协程滞留造成OOM（内存溢出）
+
+// go 内存逃逸
+Go逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么它就会发生逃逸。
+	//逃逸的常见情况
+	1、发送指针到channel会逃逸到堆上分配
+	2、slices 中的值是指针的指针或包含指针字段。
+	3、slice 由于 append 操作超出其容量，因此会导致 slice 重新分配。
+	4、调用接口类型的方法。
+
+	// 逃逸如何避免
+	对于性能要求比较高且访问频次比较高的函数调用，应该尽量避免使用接口类型
+	减少外部引用, 如指针
+
+// map 实现原理
+go map 基于 Hash 表实现，数据结构是hash数组+桶内的key-value数组+溢出的桶链表，当 Hash 表超过阈值需要扩容增长时，会分配一个新的桶数组，新数组的大小一般是旧数组的 2 倍。每个桶最多存 8 个键值对
+
+// slice 实现原理
+底层也是一个数组，容量满了时会扩容。cap一般变为原来的2倍
+type slice struct {
+	array unsafe.Pointer
+	len   int
+	cap   int
+}
+
+// slice 和array 的区别
+array是固定长度的数组，使用前必须确定数组长度，数组是值类型
+slice是一个引用类型，是一个动态的指向数组切片的指针。
+slice是一个不定长的，总是指向底层的数组array的数据结构。
+
+如果协程A发生了panic，协程B是否会因为协程A的panic而挂掉？ // 会
+如果协程A发生了panic，协程B是否能用recover捕获到协程A的panic？ // 不会
+
+//golang GC原理
+1.引用计数(reference counting):如Python
+2.标记-清扫(mark & sweep)、三色标记法：如golang
+```
 
 
 
-
-# golang合集
+# golang基础
 
 ```golang
 // 指针传值 和 值传值
@@ -215,7 +275,7 @@ const 常量无法获取地址
 去重使用map
 排序使用sort
 nil 不是关键字 //关键字有：close、delete、len、cap、new、make、copy、append、pannic、recover、print、println、complex、real、imag、fallthought
-uintptr 可以任意类型的指针
+uintptr 可以是任意类型的指针
 byte 对应 unit8 0-255 2^8-1 // 注意int8 -128-127 2^7 ~ 2^7-1
 rune 对应 int32 长处理Unicode、utf-8编码
 零值：数值是0，string是"",其他是nil
@@ -279,7 +339,94 @@ unsafe //跳过go语言类型安全限制的操作 SizeOf Aligof Offset  uintptr
 (*int16)(unsafe.Pointer(unitptr(unsafe.Pointer(&x)+unsafe. Offsetof(x.b))))
 ```
 
-# Python合集
+# Python面试题集合
+
+```python
+# 装饰器 
+装饰器的作用是在不改变函数的情况下，添加额外的功能。函数可以作为参数传递的语言，都可以使用装饰器  #语法糖 @
+# 带参数的装饰器
+def use_logging(level):pass #@use_logging(level="warn")
+# 类装饰器
+必须要有__call__方法,__init__ 里面传入func
+@className
+def
+# functools.wraps，wraps本身也是一个装饰器，它能把原函数的元信息拷贝到装饰器里面的 func 函数中
+from functools import wraps
+def logged(func):
+    @wraps(func) #可以保留原func的属性
+    def with_logging(*args, **kwargs):
+        print func.__name__      # 输出 原func
+        print func.__doc__       # 输出 原func
+        return func(*args, **kwargs)
+    return with_logging
+# 装饰器顺序
+@a
+@b
+@c
+def f ():
+    pass
+f = a(b(c(f)))
+
+# 迭代器 
+迭代器是一个可以记住遍历的位置的对象。
+迭代器有两个基本的方法：iter() 和 next() 或者 c.__next__
+一个类作为一个迭代器使用需要在类中实现两个方法 __iter__() 与 __next__()
+
+# 生成器
+使用了 yield 的函数被称为生成器（generator）。
+yield本身就是一个迭代器
+yield from iter 
+yield 可以接收send发送的数据
+
+#lambda 匿名函数值作用
+f1 = lambda x,y:x*x+y*y
+f1(1,2)
+语音简洁，方便使用
+
+# list 和 tuple 底层原理
+底层都是一个数组指针，指针指向相应的对象，列表采用了指数分配，所以并不是每次操作都需要改变数组的大小
+列表是动态的，而元组是不可变的，一旦创建就不能修改。
+
+# set集合 和 dict 底层原理
+字典底层是维护一张哈希表，python3.6及之前是无序的，3.7开始加入Indices表来辅助
+
+# python2和python3的range（）的区别
+python2返回列表，python3返回迭代器，节约内存
+
+# __new__和__init__区别
+__new__至少要有一个参数cls，代表当前类，__new__#必须要有返回值
+__init__有一个参数self，就是这个__new__返回的实例，__init__在__new__的基础上可以完成一些其它初始化的动作
+	#__init__不需要返回值
+
+# 如何避免转义
+r表示需要原始字符串，不转义特殊字符，r"hjx\njx" or 'hjx\njx'
+
+# python中断言方法
+assert（）
+
+# 不可变数据类型：数值型、字符串型string和元组tuple
+
+# 字典排序
+sorted()函数
+
+# 正则表达式匹配中，（.*）和（.*?）匹配区别？
+（.*）是贪婪匹配，会把满足正则的尽可能多的往后匹配
+（.*?）是非贪婪匹配，会把满足正则的尽可能少匹配
+
+# python中copy和deepcopy区别
+复制不可变数据类型，不管copy还是deepcopy,都是同一个地址当浅复制的值是不可变对象
+可变类型，浅拷贝改变原id的值，新值会跟着改变，深拷贝deepcopy：完全复制独立，包括内层列表和字典
+
+# python垃圾回收机制
+python垃圾回收主要以引用计数为主，标记-清除和分代清除为辅的机制，其中标记-清除和分代回收主要是为了处理循环引用的难题。
+
+
+
+```
+
+
+
+# Python基础
 
 ```python
 GIL  #python 解释器每次之后运行一个线程

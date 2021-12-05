@@ -269,5 +269,9 @@ javanano_out ：适合运行在有资源限制的平台（如Android）的java�
 objc_out ：生成 Objective-C代码
 csharp_out ：生成C#代码
 php_out ：生成PHP代码
+
+
+protoc --go_out=plugins=grpc:. login.proto
+
 ```
 
