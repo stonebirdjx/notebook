@@ -808,6 +808,404 @@ func isPalindrome(head *ListNode) bool {
 }
 ```
 
+### 二叉树
+
+#### [104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
+
+给定一个二叉树，找出其最大深度。
+
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例：
+给定二叉树 [3,9,20,null,null,15,7]，
+
+       3
+       / \
+      9  20
+        /  \
+       15   7
+最大深度为3
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+// 深度优先遍历
+func maxDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left := maxDepth(root.Left)
+	right := maxDepth(root.Right)
+	if left > right {
+		return left + 1
+	}
+	return right + 1
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+
+```
+
+#### [543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+
+给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
+
+示例 :
+给定二叉树
+
+          1
+         / \
+        2   3
+       / \     
+      4   5    
+返回 3, 它的长度是路径 [4,2,1,3] 或者 [5,2,1,3]。
+
+ code
+
+```go
+// 思路:dfs深度优先遍历递归解决
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func diameterOfBinaryTree(root *TreeNode) int {
+	ret := 0
+	if root == nil {
+		return ret
+	}
+
+	var dfs func(node *TreeNode) int
+	dfs = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		left := dfs(node.Left)
+		right := dfs(node.Right)
+		ret = max(ret, left+right)
+		return 1 + max(left, right)
+	}
+	dfs(root)
+	return ret
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.ret = 0
+        if not root:
+            return self.ret
+        
+        def dfs(node):
+            if not node:
+                return 0
+            left = dfs(node.left)
+            right = dfs(node.right)
+            self.ret = max(self.ret, left + right)
+            return 1 + max(left, right)
+
+        dfs(root)
+        return self.ret
+
+```
+
+#### [144. 二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+
+给你二叉树的根节点 root ，返回它节点值的 前序 遍历。
+
+示例 1：
+
+```
+输入：root = [1,null,2,3]
+输出：[1,2,3]
+```
+
+
+示例 2：
+
+```
+输入：root = []
+输出：[]
+```
+
+
+示例 3：
+
+```
+输入：root = [1]
+输出：[1]
+```
+
+code
+
+```go
+// dfs 深度遍历
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func preorderTraversal(root *TreeNode) []int {
+	var ret []int
+
+	var dfs func(node *TreeNode)
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		ret = append(ret,node.Val)
+		dfs(node.Left)
+		dfs(node.Right)
+	}
+	dfs(root)
+
+	return ret
+}
+
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: TreeNode) ->[]:
+        self.ret = []
+        self.dfs(root)
+        return self.ret
+
+    def dfs(self, node):
+        if not node:
+            return 
+        self.ret.append(node.val)
+        self.dfs(node.left)
+        self.dfs(node.right)
+```
+
+#### [226. 翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
+
+翻转一棵二叉树。
+
+示例：
+
+输入：
+
+          4
+       /   \
+      2     7
+     / \   / \
+    1   3 6   9
+
+输出：
+
+          4
+       /   \
+      7     2
+     / \   / \
+    9   6 3   1
+code
+
+```go
+// 递归就好了，左右互换
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+
+	left := invertTree(root.Left)
+	right := invertTree(root.Right)
+	root.Left, root.Right = right, left
+	
+	return root
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        left = self.invertTree(root.left)
+        right = self.invertTree(root.right)
+        root.left = right
+        root.right = left
+        
+        return root
+```
+
+#### [114. 二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)
+
+给你二叉树的根结点 root ，请你将它展开为一个单链表：
+
+展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+展开后的单链表应该与二叉树 先序遍历 顺序相同。
+
+示例 1：
+
+```
+输入：root = [1,2,5,3,4,null,6]
+输出：[1,null,2,null,3,null,4,null,5,null,6]
+```
+
+
+示例 2：
+
+```
+输入：root = []
+输出：[]
+```
+
+
+示例 3：
+
+```
+输入：root = [0]
+输出：[0]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func flatten(root *TreeNode) {
+	// 构建一个新的链表，然后再把root指过去
+	if root == nil {
+		return
+	}
+
+	newRoot := new(TreeNode)
+	pre := newRoot
+	var dfs func(root *TreeNode)
+	dfs = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+
+		left, right := root.Left, root.Right
+
+		// 清除left、right，构建单链表形式
+		root.Left, root.Right = nil, nil
+		pre.Right = root
+		pre = pre.Right
+
+		dfs(left)
+		dfs(right)
+	}
+
+	dfs(root)
+}
+
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        if not root:
+            return None
+
+        def dfs(root):
+            if not root:
+                return
+            dfs(root.left)
+            dfs(root.right)  # 递归遍历
+
+            L = root.left
+            R = root.right  # 复制节点
+
+            root.left = None  # 将左子树滞空
+            root.right = L  # 根的右子树=现在的左子树
+
+            while root.right:  # 找到现在的左子树（已经放到右子树了）的最后一个节点（用来衔接现在的右子树）
+                root = root.right
+            root.right = R  # 粘贴
+            
+        dfs(root)
+
+```
+
 
 
 
