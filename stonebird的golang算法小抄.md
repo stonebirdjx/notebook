@@ -12,6 +12,170 @@ power by lubuladong : https://github.com/labuladong/fucking-algorithm
 
 对于任何数据结构，其基本操作无非遍历 + 访问，再具体一点就是：增删查改。
 
+## 二叉树遍历
+
+深度优先DFS：牺牲空间
+
+```go
+//前序遍历
+// 根节点 左子树 右子树
+func PreOrder(node *TreeNode) {
+   if node != nil {
+      fmt.Printf("%v  ", node.Val)
+      PreOrder(node.Left)
+      PreOrder(node.Right)
+   }
+}
+
+//中序遍历
+// 左子树 根节点 右子树
+func InfixOrder(node *TreeNode) {
+   if node != nil {
+      InfixOrder(node.Left)
+      fmt.Printf("%v  ", node.Val)
+      InfixOrder(node.Right)
+   }
+}
+
+//后序遍历
+//  左子树 右子树 根节点
+func PostOrder(node *TreeNode) {
+   if node != nil {
+      PostOrder(node.Left)
+      PostOrder(node.Right)
+      fmt.Printf("%v  ", node.Val)
+   }
+}
+
+```
+
+广度优先BFS：性能性能
+
+```go
+// 层序遍历
+func bfs(p *TreeNode) []int {
+    res := make([]int, 0)
+    if p == nil {
+        return res
+    }
+    queue := []*TreeNode{p}
+    for len(queue) > 0 {
+        length := len(queue)
+        for length > 0 {
+            length--
+            if queue[0].Left != nil {
+                queue = append(queue, queue[0].Left)
+            }
+            if queue[0].Right != nil {
+                queue = append(queue, queue[0].Right)
+            }
+            res = append(res, queue[0].Val)
+            queue = queue[1:]
+        }
+    }
+    return res
+}
+
+// 先序遍历
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func preorderTraversal(root *TreeNode) []int {
+    result := make([]int, 0)
+
+    if root == nil {
+        return result
+    }
+
+    queue := make([]*TreeNode, 0)
+
+    for len(queue) > 0 || root != nil {
+        for root != nil {
+            result = append(result, root.Val)
+            queue = append(queue, root)
+            root = root.Left
+        }
+        root = queue[len(queue) - 1].Right
+        queue = queue[:len(queue) - 1]
+    }
+    return result
+}
+
+//中序遍历
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func inorderTraversal(root *TreeNode) []int {
+    result := make([]int, 0)
+    
+    if root == nil {
+        return result
+    }
+
+    queue := make([]*TreeNode, 0)
+    
+    for len(queue) > 0 || root != nil {
+        for root != nil {
+            queue = append(queue, root)
+            root = root.Left
+        }
+
+        node := queue[len(queue) - 1]
+        queue = queue[:len(queue) - 1]
+        result = append(result, node.Val)
+        root = node.Right
+    }
+    return result
+}
+
+//后序遍历
+func postorderTraversal(root *TreeNode) []int {
+    result := make([]int, 0)
+
+    if root == nil {
+        return result
+    }
+
+    queue := make([]*TreeNode, 0)
+    var lastVisited *TreeNode
+
+    for len(queue) > 0 || root != nil{
+        for root != nil {
+            queue = append(queue, root)
+            root = root.Left
+        }
+        n := queue[len(queue) - 1]    
+        if n.Right == nil || n.Right == lastVisited {
+            result = append(result, n.Val)
+            queue = queue[:len(queue) - 1]
+            lastVisited = n
+        } else {
+            root = n.Right
+        }
+    }
+
+    return result
+}
+```
+
+
+
+## 二叉搜索树
+
+又称二叉查找树、二叉排序树
+
+它或者是一棵空树，或者是具有下列性质的[二叉树](https://baike.baidu.com/item/二叉树/1602879)： 若它的左子树不空，则左子树上所有结点的值均小于它的[根结点](https://baike.baidu.com/item/根结点/9795570)的值； 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值； 它的左、右子树也分别为[二叉排序树](https://baike.baidu.com/item/二叉排序树/10905079)。
+
 # fucking-algorithm
 
 ## 基本数据结构
@@ -1206,6 +1370,778 @@ class Solution:
 
 ```
 
+#### [116. 填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)
+
+给定一个 完美二叉树 ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```
+
+
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+
+初始状态下，所有 next 指针都被设置为 NULL。
+
+进阶：
+
+你只能使用常量级额外空间。
+使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+
+示例：
+
+```
+输入：root = [1,2,3,4,5,6,7]
+输出：[1,#,2,3,#,4,5,6,7,#]
+
+```
+
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化的输出按层序遍历排列，同一层节点由 next 指针连接，'#' 标志着每一层的结束。
+
+code
+
+```go
+/**
+ * Definition for a Node.
+ * type Node struct {
+ *     Val int
+ *     Left *Node
+ *     Right *Node
+ *     Next *Node
+ * }
+ */
+
+func connect(root *Node) *Node {
+    if root == nil {
+        return root
+    }
+
+    // 每次循环从该层的最左侧节点开始
+    for leftmost := root; leftmost.Left != nil; leftmost = leftmost.Left {
+        // 通过 Next 遍历这一层节点，为下一层的节点更新 Next 指针
+        for node := leftmost; node != nil; node = node.Next {
+            // 左节点指向右节点
+            node.Left.Next = node.Right
+
+            // 右节点指向下一个左节点
+            if node.Next != nil {
+                node.Right.Next = node.Next.Left
+            }
+        }
+    }
+
+    // 返回根节点
+    return root
+}
+```
+
+code2-python
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        
+        if not root:
+            return root
+        
+        # 从根节点开始
+        leftmost = root
+        
+        while leftmost.left:
+            
+            # 遍历这一层节点组织成的链表，为下一层的节点更新 next 指针
+            head = leftmost
+            while head:
+                
+                # CONNECTION 1
+                head.left.next = head.right
+                
+                # CONNECTION 2
+                if head.next:
+                    head.right.next = head.next.left
+                
+                # 指针向后移动
+                head = head.next
+            
+            # 去下一层的最左的节点
+            leftmost = leftmost.left
+        
+        return root 
+
+```
+
+#### [654. 最大二叉树](https://leetcode-cn.com/problems/maximum-binary-tree/)
+
+给定一个不含重复元素的整数数组 nums 。一个以此数组直接递归构建的 最大二叉树 定义如下：
+
+二叉树的根是数组 nums 中的最大元素。
+左子树是通过数组中 最大值左边部分 递归构造出的最大二叉树。
+右子树是通过数组中 最大值右边部分 递归构造出的最大二叉树。
+返回有给定数组 nums 构建的 最大二叉树 。
+
+示例 1：
+
+```
+输入：nums = [3,2,1,6,0,5]
+输出：[6,3,5,null,2,0,null,null,1]
+```
+
+
+解释：递归调用如下所示：
+
+- [3,2,1,6,0,5] 中的最大值是 6 ，左边部分是 [3,2,1] ，右边部分是 [0,5] 。
+    - [3,2,1] 中的最大值是 3 ，左边部分是 [] ，右边部分是 [2,1] 。
+        - 空数组，无子节点。
+        - [2,1] 中的最大值是 2 ，左边部分是 [] ，右边部分是 [1] 。
+            - 空数组，无子节点。
+            - 只有一个元素，所以子节点是一个值为 1 的节点。
+    - [0,5] 中的最大值是 5 ，左边部分是 [0] ，右边部分是 [] 。
+        - 只有一个元素，所以子节点是一个值为 0 的节点。
+        - 空数组，无子节点。
+
+示例 2：
+
+```
+输入：nums = [3,2,1]
+输出：[3,null,2,null,1]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func constructMaximumBinaryTree(nums []int) *TreeNode {
+	if len(nums) == 0 {
+		return nil
+	}
+
+	var max int
+	var maxId int
+	for index,val := range nums {
+		 if val > max {
+		 	max = val
+		 	maxId = index
+		 }
+	}
+	root := &TreeNode{
+		Val: max,
+	} 
+	
+	root.Left = constructMaximumBinaryTree(nums[:maxId])
+	root.Right = constructMaximumBinaryTree(nums[maxId+1:])
+
+	return root
+}
+```
+
+code-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> TreeNode:
+        def handler(arr):
+            if not arr:
+                return None
+            max_val = max(arr)
+            max_index = arr.index(max_val)
+            root = TreeNode(max_val)
+            root.left = handler(arr[:max_index])
+            root.right = handler(arr[max_index + 1:])
+            return root
+
+        return handler(nums)
+```
+
+#### [105. 从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+给定一棵树的前序遍历 preorder 与中序遍历  inorder。请构造二叉树并返回其根节点。
+
+示例 1:
+
+```
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+```
+
+
+示例 2:
+
+```
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func buildTree(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) == 0 || len(inorder) == 0 {
+		return nil
+	}
+	root := &TreeNode{Val: preorder[0]}
+
+	i := 0
+	for index, val := range inorder {
+		if val == preorder[0] {
+			i = index
+			break
+		}
+	}
+
+	root.Left = buildTree(preorder[1:len(inorder[:i])+1], inorder[:i])
+	root.Right = buildTree(preorder[len(inorder[:i])+1:], inorder[i+1:])
+	return root
+
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        if not preorder:
+            return None
+        root = TreeNode(preorder[0])
+        separateIdx = inorder.index(root.val)
+        # print(preorder[1:1 + separateIdx], inorder[:separateIdx])
+        root.left = self.buildTree(preorder[1:1 + separateIdx], inorder[:separateIdx])
+        root.right = self.buildTree(preorder[1 + separateIdx:], inorder[separateIdx + 1:])
+        # print(preorder[1 + separateIdx:], inorder[separateIdx + 1:])
+        return root
+```
+
+#### [106. 从中序与后序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+
+根据一棵树的中序遍历与后序遍历构造二叉树。
+
+注意:
+你可以假设树中没有重复的元素。
+
+例如，给出
+
+```go
+中序遍历 inorder = [9,3,15,20,7]
+后序遍历 postorder = [9,15,7,20,3]
+```
+
+
+返回如下的二叉树：
+
+       3
+       / \
+      9  20
+        /  \
+       15   7
+
+通过次数1
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func buildTree(inorder []int, postorder []int) *TreeNode {
+	if len(inorder) == 0 || len(postorder) == 0 {
+		return nil
+	}
+
+	// node val
+	val := postorder[len(postorder)-1]
+	var index int
+	for i := range inorder {
+		if inorder[i] == val {
+			index = i
+			break
+		}
+	}
+
+	return &TreeNode{
+		Val: val,
+		Left: buildTree(inorder[:index],postorder[:index]),
+		Right: buildTree(inorder[index+1:],postorder[index:len(postorder)-1]),
+	}
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        if not inorder or not postorder:
+            return None
+
+        # node val
+        val = postorder[-1]
+        index = inorder.index(val)
+
+        root = TreeNode(val=val)
+        root.left = self.buildTree(inorder=inorder[:index], postorder=postorder[:index])
+        root.right = self.buildTree(inorder[index + 1:], postorder[index:len(postorder) - 1])
+
+        return root
+
+```
+
+#### [889. 根据前序和后序遍历构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal/)
+
+返回与给定的前序和后序遍历匹配的任何二叉树。
+
+pre 和 post 遍历中的值是不同的正整数。
+
+示例：
+
+```go
+输入：pre = [1,2,4,5,3,6,7], post = [4,5,2,6,7,3,1]
+输出：[1,2,3,4,5,6,7]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func constructFromPrePost(pre []int, post []int) *TreeNode {
+
+	var tree func(pre []int, post []int) *TreeNode
+	tree = func(pre []int, post []int) *TreeNode {
+		// 如果左或者右子树为空 直接返回nil
+		if len(pre) == 0 {
+			return nil
+		}
+		// 创建节点 赋值
+		root := &TreeNode{}
+		root.Val = pre[0]
+		// 考虑到 根据pre[1] 来寻找左右子树  遇到只有一个节点的左右子树 直接返回
+		if len(pre) == 1 {
+			return root
+		}
+		// 找左子树的根节点 pre[1]
+		// 前序遍历的根节点的下一个节点是 左子树的根节点
+		mid := 0
+		for i, v := range post {
+			if v == pre[1] {
+				mid = i
+				break
+			}
+		}
+		// 递归进行
+		root.Left = tree(pre[1:mid+2], post[:mid+1])
+		root.Right = tree(pre[mid+2:], post[mid+1:len(post) - 1])
+		return root
+	}
+	return tree(pre, post)
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def constructFromPrePost(self, preorder, postorder):
+        """
+        :type preorder: List[int]
+        :type postorder: List[int]
+        :rtype: TreeNode
+        """
+
+        if not postorder:
+            return None
+
+        root = TreeNode(val=preorder[0])
+        if len(preorder) == 1: return root
+
+        index = postorder.index(preorder[1])
+        root.left = self.constructFromPrePost(preorder[1:index+2],postorder[:index+1])
+        root.right = self.constructFromPrePost(preorder[index+2:],postorder[index+1:-1])
+        
+        return root
+```
+
+#### [652. 寻找重复的子树](https://leetcode-cn.com/problems/find-duplicate-subtrees/)
+
+给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根结点即可。
+
+两棵树重复是指它们具有相同的结构以及相同的结点值。
+
+示例 1：
+
+        1
+       / \
+      2   3
+     /   / \
+    4   2   4
+       /
+      4
+下面是两个重复的子树：
+
+      2
+     /
+    4
+和
+
+    4
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func findDuplicateSubtrees(root *TreeNode) []*TreeNode {
+	var res []*TreeNode
+
+	if root == nil {
+		return res
+	}
+
+	mp := make(map[string]int)
+
+	var dfs func(node *TreeNode) string
+	dfs = func(node *TreeNode) string {
+		if node == nil {
+			return ""
+		}
+		sub := fmt.Sprintf("%v:%v:%v", node.Val, dfs(node.Left), dfs(node.Right))
+		mp[sub]++
+		if mp[sub] == 2 {
+			res = append(res, node)
+		}
+		return sub
+	}
+	dfs(root)
+	return res
+}
+```
+
+code2-python
+
+````python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def findDuplicateSubtrees(self, root: Optional[TreeNode]) -> List[Optional[TreeNode]]:
+        count = collections.Counter()
+        res = []
+
+        def counter(node):
+            if not node:
+                return ""
+
+            sub = "{}:{}:{}".format(node.val, counter(node.left), counter(node.right))
+            count[sub] += 1
+            if count[sub] == 2:
+                res.append(node)
+            return sub
+
+        counter(root)
+        return res
+
+````
+
+#### [230. 二叉搜索树中第K小的元素](https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/)
+
+给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）。
+
+示例 1：
+
+```
+输入：root = [3,1,4,null,2], k = 1
+输出：1
+```
+
+
+示例 2：
+
+```
+输入：root = [5,3,6,2,4,null,null,1], k = 3
+输出：3
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func kthSmallest(root *TreeNode, k int) int {
+	res := 0
+	var dfs func(node *TreeNode)
+
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		dfs(node.Left)
+		k--
+		if k == 0 {
+			res = node.Val
+		}
+		dfs(node.Right)
+	}
+	dfs(root)
+	return res
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        self.res = 0
+        self.k = k
+
+        def dfs(node):
+            if not node:
+                return
+
+            dfs(node.left)
+            self.k -= 1
+            if self.k == 0:
+                self.res = node.val
+                return
+            dfs(node.right)
+
+        dfs(root)
+
+        return self.res
+
+```
+
+#### [538. 把二叉搜索树转换为累加树](https://leetcode-cn.com/problems/convert-bst-to-greater-tree/)
+
+给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
+
+提醒一下，二叉搜索树满足下列约束条件：
+
+节点的左子树仅包含键 小于 节点键的节点。
+节点的右子树仅包含键 大于 节点键的节点。
+左右子树也必须是二叉搜索树。
+注意：本题和 1038: https://leetcode-cn.com/problems/binary-search-tree-to-greater-sum-tree/ 相同
+
+示例 1：
+
+````
+输入：[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
+输出：[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
+````
+
+
+示例 2：
+
+```
+输入：root = [0,null,1]
+输出：[1,null,1]
+```
+
+
+示例 3：
+
+```
+输入：root = [1,0,2]
+输出：[3,3,2]
+```
+
+
+示例 4：
+
+```
+输入：root = [3,2,4,1]
+输出：[7,9,4,10]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+// 只需要反序中序遍历该二叉搜索树，记录过程中的节点值之和
+func convertBST(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	sum := 0
+	var dfs func(node *TreeNode)
+
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+
+		dfs(node.Right)
+		sum = sum + node.Val
+		node.Val = sum
+		dfs(node.Left)
+	}
+
+	dfs(root)
+	return root
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return None
+        self.s = 0
+
+        def dfs(node):
+            if not node:
+                return
+
+            dfs(node.right)
+            self.s = self.s + node.val
+            node.val = self.s
+            dfs(node.left)
+
+        dfs(root)
+        return root
+```
+
+#### [450. 删除二叉搜索树中的节点](https://leetcode-cn.com/problems/delete-node-in-a-bst/)
+
+给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
+
+一般来说，删除节点可分为两个步骤：
+
+首先找到需要删除的节点；
+如果找到了，删除它。
+
+示例 1:
+
+````
+输入：root = [5,3,6,2,4,null,7], key = 3
+输出：[5,4,6,2,null,null,7]
+````
+
+
+解释：给定需要删除的节点值是 3，所以我们首先找到 3 这个节点，然后删除它。
+一个正确的答案是 [5,4,6,2,null,null,7], 如下图所示。
+另一个正确答案是 [5,2,6,null,4,null,7]。
+
+示例 2:
+
+```
+输入: root = [5,3,6,2,4,null,7], key = 0
+输出: [5,3,6,2,4,null,7]
+```
+
+解释: 二叉树不包含值为 0 的节点
+
+示例 3:
+
+```
+输入: root = [], key = 0
+输出: []
+```
+
+code
+
+```go
+```
 
 
 
