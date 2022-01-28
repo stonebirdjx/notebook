@@ -2141,8 +2141,553 @@ class Solution:
 code
 
 ```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if key < root.Val {
+		root.Left = deleteNode(root.Left, key)
+	} else if root.Val < key {
+		root.Right = deleteNode(root.Right, key)
+	} else {
+		if root.Left == nil {
+			return root.Right
+		}
+		if root.Right == nil {
+			return root.Left
+		}
+		min := root.Right
+		for min.Left != nil {
+			min = min.Left
+		}
+		min.Left = root.Left
+		root = root.Right
+	}
+	return root
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        if not root:
+            return None
+
+        if key > root.val:
+            root.right = self.deleteNode(root.right, key)
+        elif key < root.val:
+            root.left = self.deleteNode(root.left, key)
+        else:
+            if not root.left:
+                return root.right
+
+            if not root.right:
+                return root.left
+
+            mini = root.right
+            while mini.left:
+                mini = mini.left
+
+            mini.left = root.left
+            root = root.right
+
+        return root
+
+```
+
+#### [701. 二叉搜索树中的插入操作](https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/)
+
+给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 输入数据 保证 ，新值和原始二叉搜索树中的任意节点值都不同。
+
+注意，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。 你可以返回 任意有效的结果 。
+
+示例 1：
+
+```
+输入：root = [4,2,7,1,3], val = 5
+输出：[4,2,7,1,3,5]
+```
+
+示例 2：
+
+```
+输入：root = [40,20,60,10,30,50,70], val = 25
+输出：[40,20,60,10,30,50,70,null,null,25]
 ```
 
 
+示例 3：
 
+```
+输入：root = [4,2,7,1,3,null,null,null,null,null,null], val = 5
+输出：[4,2,7,1,3,5]
+```
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{Val: val}
+	}
+	p := root
+
+	for p != nil {
+		if val < p.Val {
+			if p.Left == nil {
+				p.Left = &TreeNode{Val: val}
+				break
+			}
+			p = p.Left
+		} else {
+			if p.Right == nil {
+				p.Right = &TreeNode{Val: val}
+				break
+			}
+			p = p.Right
+		}
+	}
+	return root
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return TreeNode(val=val)
+
+        p = root
+
+        while p:
+            if val < p.val:
+                if not p.left:
+                    p.left = TreeNode(val=val)
+                    break
+                p = p.left
+            else:
+                if not p.right:
+                    p.right = TreeNode(val=val)
+                    break
+                p = p.right
+
+        return root
+```
+
+#### [700. 二叉搜索树中的搜索](https://leetcode-cn.com/problems/search-in-a-binary-search-tree/)
+
+给定二叉搜索树（BST）的根节点和一个值。 你需要在BST中找到节点值等于给定值的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 NULL。
+
+例如，
+
+给定二叉搜索树:
+
+        4
+       / \
+      2   7
+     / \
+    1   3
+
+和值: 2
+你应该返回如下子树:
+
+      2     
+     / \   
+    1   3
+在上述示例中，如果要找的值是 5，但因为没有节点值为 5，我们应该返回 NULL。
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func searchBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+
+	if root.Val == val {
+		return root
+	}
+
+	if root.Val > val {
+		return searchBST(root.Left,val)
+	}
+	return searchBST(root.Right,val)
+}
+```
+
+code-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return None
+
+        if root.val == val:
+            return root
+
+        if root.val > val:
+            return self.searchBST(root.left, val=val)
+
+        return self.searchBST(root.right, val=val)
+
+```
+
+#### [98. 验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)
+
+给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+
+有效 二叉搜索树定义如下：
+
+节点的左子树只包含 小于 当前节点的数。
+节点的右子树只包含 大于 当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+
+示例 1：
+
+```
+输入：root = [2,1,3]
+输出：true
+```
+
+
+示例 2：
+
+```
+输入：root = [5,1,4,null,null,3,6]
+输出：false
+```
+
+
+解释：根节点的值是 5 ，但是右子节点的值是 4 。
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+ // 知道二叉搜索树「中序遍历」得到的值构成的序列一定是升序的
+func isValidBST(root *TreeNode) bool {
+	var stack []*TreeNode
+	min := math.MinInt64
+	for len(stack) > 0 || root != nil {
+		for root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		}
+		last := len(stack)-1
+		root = stack[last] //最后一个左子树
+		stack = stack[:last]
+		
+		if root.Val <= min {
+			return false
+		}
+		min = root.Val
+		root= root.Right
+	}
+	return true
+}
+```
+
+code2-python
+
+````python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+
+        l = []
+        minNum = float('-inf')
+
+        while len(l) > 0 or root:
+            while root:
+                l.append(root)
+                root = root.left
+
+            root = l[-1]
+            l.pop()
+
+            if root.val <= minNum:
+                return False
+
+            minNum = root.val
+
+            root = root.right
+        return True
+````
+
+#### [96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
+
+给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。
+
+示例 1：
+
+```
+输入：n = 3
+输出：5
+```
+
+
+示例 2：
+
+```
+输入：n = 1
+输出：1
+```
+
+
+提示：
+
+1 <= n <= 19
+
+code
+
+```go
+
+func numTrees(n int) int {
+	list := make([]int, n+1)
+
+	list[0], list[1] = 1, 1
+	for i := 2; i <= n; i++ {
+		for j := 1; j <= i; j++ {
+			list[i] += list[j-1] * list[i-j]
+		}
+	}
+
+	return list[n]
+}
+```
+
+code2-python
+
+```python
+class Solution:
+    def numTrees(self, n: int) -> int:
+        l = [0] * (n + 1)
+        l[0], l[1] = 1, 1
+
+        for i in range(2, n + 1):
+            for j in range(i + 1):
+                l[i] += l[j - 1] * l[i - j]
+
+        return l[n]
+```
+
+#### [95. 不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)
+
+给你一个整数 n ，请你生成并返回所有由 n 个节点组成且节点值从 1 到 n 互不相同的不同 二叉搜索树 。可以按 任意顺序 返回答案。
+
+示例 1：
+
+```
+输入：n = 3
+输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
+```
+
+
+示例 2：
+
+```
+输入：n = 1
+输出：[[1]]
+```
+
+
+提示：
+
+1 <= n <= 8
+
+code
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func generateTrees(n int) []*TreeNode {
+	if n <= 0 {
+		return nil
+	}
+
+	return dfs(1, n)
+}
+
+func dfs(start, end int) []*TreeNode {
+	if start > end {
+		return []*TreeNode{nil}
+	}
+	var all []*TreeNode
+	// 枚举可行根节点
+	for i := start; i <= end; i++ {
+		// 获得所有可行的左子树集合
+		lefts := dfs(start, i - 1)
+		// 获得所有可行的右子树集合
+		rights := dfs(i + 1, end)
+		// 从左子树集合中选出一棵左子树，从右子树集合中选出一棵右子树，拼接到根节点上
+		for _, left := range lefts {
+			for _, right := range rights {
+				currTree := &TreeNode{i, left, right}
+				all = append(all, currTree)
+			}
+		}
+	}
+	return all
+}
+```
+
+code2-python
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def generateTrees(self, n: int) -> List[TreeNode]:
+        if n <= 0:
+            return None
+        
+        return self.dfs(1,n)
+
+    def dfs(self, start: int, end: int) -> List[TreeNode]:
+        if start > end:
+            return [None]
+
+        all = []
+
+        for i in range(start, end + 1):
+            lefts = self.dfs(start, i - 1)
+            rights = self.dfs(i + 1, end)
+            
+            for left in lefts:
+                for right in rights:
+                    node = TreeNode(val=i,left=left,right=right)
+                    all.append(node)
+        return all
+```
+
+#### [1373. 二叉搜索子树的最大键值和](https://leetcode-cn.com/problems/maximum-sum-bst-in-binary-tree/)
+
+难度困难77收藏分享切换为英文接收动态反馈
+
+给你一棵以 `root` 为根的 **二叉树** ，请你返回 **任意** 二叉搜索子树的最大键值和。
+
+二叉搜索树的定义如下：
+
+- 任意节点的左子树中的键值都 **小于** 此节点的键值。
+- 任意节点的右子树中的键值都 **大于** 此节点的键值。
+- 任意节点的左子树和右子树都是二叉搜索树。
+
+示例 1
+
+```
+输入：root = [1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]
+输出：20
+解释：键值为 3 的子树是和最大的二叉搜索树。
+```
+
+示例 2
+
+```
+输入：root = [4,3,null,1,2]
+输出：2
+解释：键值为 2 的单节点子树是和最大的二叉搜索树。
+```
+
+示例 3
+
+```
+输入：root = [-4,-2,-5]
+输出：0
+解释：所有节点键值都为负数，和最大的二叉搜索树为空。
+```
+
+示例 4
+
+```
+输入：root = [2,1,3]
+输出：6
+```
+
+示例 5
+
+```
+输入：root = [5,4,8,3,null,6,3]
+输出：7
+```
+
+**提示：**
+
+- 每棵树有 `1` 到 `40000` 个节点。
+- 每个节点的键值在 `[-4 * 10^4 , 4 * 10^4]` 之间。
+
+code
+
+```go
+```
 
