@@ -889,7 +889,7 @@ docker run  #创建一个新的容器并运行
 docker pull postgres
 
 #运行 postgres
-docker run -d --name postgres --restart always -e POSTGRES_PASSWORD='db10$ZTE' -e ALLOW_IP_RANGE=0.0.0.0/0 -v /home/postgres/data:/var/lib/postgresql -p 5432:5432  1245863260/postgres:v1
+docker run -d --name postgres --restart always -e POSTGRES_PASSWORD='dbxx$xxx' -e ALLOW_IP_RANGE=0.0.0.0/0 -v /home/postgres/data:/var/lib/postgresql -p 5432:5432  1245863260/postgres:v1
 
 #进入容器
 docker exec -it containerid /bin/bash
