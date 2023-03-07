@@ -3,6 +3,21 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [github-gitee](#github-gitee)
+- [git 常用](#git-%E5%B8%B8%E7%94%A8)
+  - [:point_right:克隆](#point_right%E5%85%8B%E9%9A%86)
+    - [工作区](#%E5%B7%A5%E4%BD%9C%E5%8C%BA)
+    - [暂存区(.git/index)](#%E6%9A%82%E5%AD%98%E5%8C%BAgitindex)
+    - [本地仓库 （.git目录）](#%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-git%E7%9B%AE%E5%BD%95)
+  - [:point_right:文件状态](#point_right%E6%96%87%E4%BB%B6%E7%8A%B6%E6%80%81)
+  - [常用命令](#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4)
+- [Git Workflow](#git-workflow)
+  - [经典分支模型](#%E7%BB%8F%E5%85%B8%E5%88%86%E6%94%AF%E6%A8%A1%E5%9E%8B)
+    - [master](#master)
+    - [develop](#develop)
+    - [release](#release)
+    - [feature（具体按功能命名）](#feature%E5%85%B7%E4%BD%93%E6%8C%89%E5%8A%9F%E8%83%BD%E5%91%BD%E5%90%8D)
+    - [hotfix](#hotfix)
+      - [tag](#tag)
 - [:point_right:git 提交规范](#point_rightgit-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83)
 - [系统设置相关](#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E7%BD%AE%E7%9B%B8%E5%85%B3)
   - [:point_right:git config - 获取和设置配置项](#point_rightgit-config---%E8%8E%B7%E5%8F%96%E5%92%8C%E8%AE%BE%E7%BD%AE%E9%85%8D%E7%BD%AE%E9%A1%B9)
@@ -145,6 +160,212 @@ git remote -v  #查看仓库信息
 git push [-f 强制] github master
 git push [-f 强制] gitee master
 ```
+
+# git 常用
+
+## :point_right:克隆
+
+```bash
+git clone git@github.com:foo/foorepo.git 
+```
+
+### 工作区 
+
+修改过的文件，显示在工作区。工作区 的文件通常显示成红色。 
+
+### 暂存区(.git/index) 
+
+修改过的文件暂存（git add）之后，会被保存到暂存区。暂存区的文件，会形成快照，为提交做准备。暂存区的文件通常显示成绿色。 
+
+### 本地仓库 （.git目录）
+
+暂存的文件提交（git commit）之后，则会保存到本地仓库（Git 数据库），并形成一个commit信息，信息包括：完整快照、Hash值、提交人信息、log等
+
+## :point_right:文件状态 
+
+文件状态包含：未跟踪、未修改、已修改、已暂存。 
+
+1. 未跟踪（Untracked）：在仓库中新增的文件，最初是未跟踪状态，Git 不对未跟踪的文件做任何记录。 
+2. 已暂存（Staged）：未跟踪或者已修改的文件，被 add 后的文件状态；已暂存的文件经过commit，则变成未修改状态。
+3. 已修改（Modified）：编辑或者修改过的文件。
+4. 未修改（Unmodified）：已跟踪的文件，但是没有进行修改。
+
+## 常用命令
+
+git config配置文件位置主要包含三个选项：local、global 和 system
+
+```bash
+git config --global user.name YourName 
+git config --global user.email YourEmali@gmail.com 
+```
+
+git init  初始化仓库
+
+```bash
+git init
+```
+
+git status 查看当前仓库的状态，可以看到当前仓库中是否有文件被修改或暂存。 作为一个好习惯，这是一个高频的命令，可以避免错误的或者不必要的提交
+
+```bash
+git status 
+```
+
+git diff 对比和显示 commit 之间、工作区（红色）或者暂存区（绿色）等详细的修改内容。 
+
+```bash
+git diff # 显示工作区的修改内容。如果暂存区有暂存改动，对比的是暂存区的。简单理解就是，显示的就是你即将 git add 的内容。 
+git diff --cached #显示暂存区的修改内容。修改内容是相对于 HEAD 的。简单理解就是，暂存区和上一个 commit 对比。 
+git diff <commit> #显示工作区相比于指定的 commit 的修改内容。简单理解就是，工作区和指定的 commit 对比。如果 commit 不是上一个，结果则会显示之前几个 commit的改动内容 + 暂存区 + 工作区的改动内容。 
+git diff --cached <commit> #显示暂存区相比于指定的 commit 的修改内容。简单理解就是，暂存区和指定的 commit 对比。如果 commit 不是上一个，结果则会显示之前几个 commit的改动内容 + 暂存区的改动内容。 
+git diff <commit1> <commit2> #显示 commit2 相对于 commit1 的修改内容。 
+```
+
+ git add 将未跟踪的文件进行跟踪，或者将修改的文件进行暂存
+
+```bash
+git add .
+git add filename
+git add --all # 跟踪或暂存所有文件。 
+```
+
+git commit 将暂存的文件进行提交，形成 commit 信息，这个代表一次提交。 
+
+```bash
+usage: git commit [<options>] [--] <pathspec>... 
+常用方式如下： 
+git commit：提交改动，会打开默认的编辑器，用于编写提交的 message，保存之后完成提交。 
+git commit -m "your message"：不打开编辑器直接输入 message 进行提交。 
+git commit -a：将工作区的内容一并提交。就是 git add --all 和 git commit 的组合。 
+```
+
+git log 查看提交历史，可以看到之前所有的 commit 信息，包括 commit 的 Hash、日期、人员、日志。
+
+```bash
+git log
+```
+
+git show  详细的显示某次提交的修改内容，用来查看某个 commit 的具体改动内容，默认情况下 git show 显示的是 HEAD 的改动。 
+
+```bash
+git show <commit> # 显示某一次 commit 的修改内容。commit 是指 Hash 值或者 HEAD 相关（也可以是分支，也可以是 tag，它们实际都是 commit）
+```
+
+git branch 用来显示当前分支，删除分支，新增分支，分支重命名，跟踪远程分支等 
+
+```bash
+# 具体可用 git branch -h 查看帮助。 
+git branch # 显示所有本地分支。 
+git branch -r # 显示所有远程分支。因为分布式的关系，这里的远程分支，其实是本地仓库中对应远程仓库分支的本地映射，并不是指实际服务器上的分支，是通过 pull 或者 push 等来同步的。 
+git branch -a #显示所有本地分支和远程分支。 
+git branch --q/--no-merged #显示已合并/未合并到当前分支的分支。 
+git branch -d #删除分支，会检查是否已合并，如果未合并则会提示“还未合并，无法删除”，-D 则会强制删除。 
+git branch -m #分支重命名，会检查新分支名是否存在。-M 强制重命名。 
+git branch --track/-t # 跟踪远程分支，与远程分支的流关联，可以pull或者push。例如：git branch --track foo origin/foo，跟踪远程分支foo。 
+```
+
+git checkout 3 检出某个状态，即快照，可以是检出文件、分支。 
+
+```bash
+git checkout -b new-branch 	# 从当前分支检出新分支new-branch。 
+git checkout -b new-branch [commit/tag] # 从某个commit或者tag，分支检出新分支new-branch。 
+git checkout -t origin/test-branch # 跟踪远程分支test-branch。也可以使用 git checkout -b test-branch origin/test-branch，其中test-branch名字可以和远程分支不一样，建议命名一致，方便追述。 
+git checkout file1 # 检出文件 file1 在 HEAD 的状态，检出的默认是暂存区，即如果暂存区有 file1，检出的是暂存区的状态。git checkout HEAD file1 则可以检出 HEAD 的文件状态。 
+git checkout -- file1 #检出文件在HEAD（暂存区有则是暂存区）的状态，即丢弃工作区的修改。 
+```
+
+git merge 合并分支。假设我当前分支是master。 
+
+```bash
+git merge branch1 #将branch1分支合并到master分支。 
+# 合并分支过程中可能会遇到冲突(Conflicts)，解决冲突之后add暂存，然后commit提交即可。 
+```
+
+git rebase 俗称“衍合”或者“变基”，与 merge 不同，rebase 会将被分支的 commit **续** 到当前分支上，让 commit 历史呈现单线的状态，非常方便追溯问题和重置修改。 
+
+```bash
+git rebase branch2
+```
+
+git pull 从远程仓库拉取最新的提交。 
+
+```bash
+git pull origin：拉取远程仓库origin，如果有多个远程仓库时，需要显式的指定要拉取的远程仓库是比较安全的。 
+git pull origin master：拉取远程仓库 origin 的 master 分支。也可以换成其他分支
+```
+
+git fetch  把远程仓库的更新，拉取到本地仓库并合并到本地仓库的远程分支中。 
+
+```bash
+git fetch
+git pull # git fetch + git rebase
+```
+
+git push 将本地仓库的提交推送到远程仓库。 
+
+```bash
+git push：推送默认分支。 
+git push origin：推送 origin 所有分支。 
+git push origin master：推送指定的分支 master 到远程仓库的 master 分支。 
+git push origin localbranch:remotebranch：推送指定的分支 localbranch 到远程仓库的 remotebranch 分支,如果remotebranch不存在，则创建。 
+git push origin :remotebranch：推送“**空分支**”到远程仓库的 remotebranch 分支,即删除远程仓库中的分支 remotebranch。 
+git push origin --tag：推送所有tag。 
+git push origin --all：推送所有分支和tag。 
+```
+
+git reset 恢复到某一次提交。将该次提交之后的所有提交到都丢弃。 
+
+**注意：如果是已经推入远程仓库的分支，禁止使用 git reset，除非你非常清楚的知道自己在做什么，否则人民会痛恨你，野狗会追咬你，这种情况下试试 git revert。**
+
+使用频率较高的选项如下： 
+
+```bash
+git reset --mixed：默认选项，也可以不加。表示重置暂存区即 index，修改内容不会丢失，会恢复到工作区。 
+git reset --hard <commit>：恢复到某一次提交。commit 代表某个提交的 Hash 值，也可以使用HEAD。 
+git reset --soft <commit>：恢复到某一次提交，并将恢复的修改保留到工作区和暂存区。
+```
+
+git revert 恢复某一次提交。将某一次提交的修改恢复回去。格式如下： 
+
+```bash
+git revert <commit> # commit 是指 commit 的 Hash 或者 HEAD 相关。 
+```
+
+# Git Workflow 
+
+这里简单的描述一下，以常见的分支模型为例。 
+
+## 经典分支模型 
+
+下面是一个典型的分支模型，包含 master develop 两个主干分支，release 发布分支，feature 新功能开发分支，hotfix 紧急修复分支，以及 tag。 
+
+### master 
+
+master 是最稳定的分支，随时可以当作 release 版本，只能从其他分支合入，不能在上面做任何提交；每个版本发布之后，对应的发布分支会合并到 master。**只接收 release 分支**的合并。 
+
+### develop 
+
+主干开发分支，是稳定的、最新的分支，主要合并其他分支，比如 feature 分支、bugfix 分支。每个版本发布流的 release 分支从 develop 分支检出。对于旧版本的 bugfix，需要从 develop 检出 bug 修复分支，修复后合回 develop。 
+
+### release 
+
+每个确认要发布的版本测试稳定之后，基于 develop 检出独立的 release 分支，来确保发布流的稳定；发布之后，合到主干分支（develop 和 master），并打上 tag。每个 release 分支会保留 2 个版本。命名规则 release + 版本描述，示例 release-v1.0.0。 
+
+### feature（具体按功能命名） 
+
+新功能（大功能或版本等）的开发分支，新功能在 feature 分支开发基本稳定之后，确认发布时，合并到 develop 分支进行进步一测试，等待发布。合并时注意，先 rebase develop 分支，然后提交合并到 develop 分支，并且要确保提交历史整洁性。 
+
+向版本分支上提的代码必须是基本稳定的或者说可以测试的，避免提交零碎的代码上来影响测试，需要协作开发的时候使用自己的协作分支。 
+
+### hotfix 
+
+紧急 bug 修复分支。已发布的版本，需要紧急修复 bug 重新上线，从之前 release 分支检出 hotfix 分支来修复和发布；发布之后，合到主干分支（develop 和 master），并打上 tag。命名规则 hotfix + 版本描述，示例 hotfix-v1.0.0。 
+
+#### tag 
+
+使用 tag 来记录所有版本信息，tag 名与 release 分支版本名对应。版本发布之后，需要将发布分支即 release 分支，打上 tag 并合并到主干分支。将 tag push 到远程仓库，并**将 tag 配置成 Protected Tag**。 
+
+除了这几个主要分支外，对于多人协作开发时，协作者之间可以在主要的开发分支上再检出一个协作分支，协作开发稳定之后再合并到主要的开发分支上，避免为了协作而将一些不完整的代码推入到开发分支上，推（push）来拉（pull）去，而影响到其他协作者的开发。
 
 # :point_right:git 提交规范
 
