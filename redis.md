@@ -4,14 +4,13 @@
 
 - [redis简介](#redis%E7%AE%80%E4%BB%8B)
   - [redis-server](#redis-server)
-    - [:point_right:redis服务相关命令](#point_rightredis%E6%9C%8D%E5%8A%A1%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4)
+    - [:point_right:redis服务相关命令（特别重要）](#point_rightredis%E6%9C%8D%E5%8A%A1%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4%E7%89%B9%E5%88%AB%E9%87%8D%E8%A6%81)
   - [redis-cli](#redis-cli)
     - [:point_right:Redis 连接命令](#point_rightredis-%E8%BF%9E%E6%8E%A5%E5%91%BD%E4%BB%A4)
 - [切换数据库](#%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E5%BA%93)
 - [:point_right:配置详情](#point_right%E9%85%8D%E7%BD%AE%E8%AF%A6%E6%83%85)
 - [支持数据类型](#%E6%94%AF%E6%8C%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B)
 - [:point_right:keys相关命令](#point_rightkeys%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4)
-- [:point_right:redis服务器命令（特别重要）](#point_rightredis%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%91%BD%E4%BB%A4%E7%89%B9%E5%88%AB%E9%87%8D%E8%A6%81)
 - [:point_right:string串操作](#point_rightstring%E4%B8%B2%E6%93%8D%E4%BD%9C)
 - [:point_right:hash（map）相关操作](#point_righthashmap%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C)
 - [:point_right:list基本操作](#point_rightlist%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C)
@@ -84,7 +83,7 @@ Sentinel mode:
 ./redis-server ../redis.conf
 ```
 
-### :point_right:redis服务相关命令
+### :point_right:redis服务相关命令（特别重要）
 
 ```bash
 BGREWRITEAOF	异步执行一个 AOF（AppendOnly File） 文件重写操作
@@ -224,42 +223,6 @@ RANDOMKEY	从当前数据库中随机返回一个 key
 RENAME		修改 key 的名称
 RENAMENX	仅当 newkey 不存在时，将 key 改名为 newkey
 TYPE		返回 key 所储存的值的类型
-```
-
-# :point_right:redis服务器命令（特别重要）
-
-```bash
-BGREWRITEAOF	异步执行一个 AOF（AppendOnly File） 文件重写操作
-BGSAVE	在后台异步保存当前数据库的数据到磁盘
-CLIENT	关闭客户端连接
-CLIENT LIST	获取连接到服务器的客户端连接列表
-CLIENT GETNAME	获取连接的名称
-CLIENT PAUSE	在指定时间内终止运行来自客户端的命令
-CLIENT SETNAME	设置当前连接的名称
-CLUSTER SLOTS	获取集群节点的映射数组
-COMMAND	获取 Redis 命令详情数组
-COMMAND COUNT	获取 Redis 命令总数
-COMMAND GETKEYS	获取给定命令的所有键
-TIME	返回当前服务器时间
-COMMAND INFO	获取指定 Redis 命令描述的数组
-CONFIG GET	获取指定配置参数的值
-CONFIG REWRITE	修改 redis.conf 配置文件
-CONFIG SET	修改 redis 配置参数，无需重启
-CONFIG RESETSTAT	重置 INFO 命令中的某些统计数据
-DBSIZE	返回当前数据库的 key 的数量
-DEBUG OBJECT	获取 key 的调试信息
-DEBUG SEGFAULT	让 Redis 服务崩溃
-FLUSHALL	删除所有数据库的所有 key
-FLUSHDB	删除当前数据库的所有 key
-INFO	获取 Redis 服务器的各种信息和统计数值
-LASTSAVE	返回最近一次 Redis 成功将数据保存到磁盘上的时间
-MONITOR	实时打印出 Redis 服务器接收到的命令，调试用
-ROLE	返回主从实例所属的角色
-SAVE	异步保存数据到硬盘
-SHUTDOWN	异步保存数据到硬盘，并关闭服务器
-SLAVEOF	将当前服务器转变从属服务器(slave server)
-SLOWLOG	管理 redis 的慢日志
-SYNC	用于复制功能 ( replication ) 的内部命令
 ```
 
 # :point_right:string串操作
