@@ -1,3 +1,12 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [文件存储、块存储、对象存储、分布式存储](#%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E5%9D%97%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8)
+- [4CS程序员](#4cs%E7%A8%8B%E5%BA%8F%E5%91%98)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # 文件存储、块存储、对象存储、分布式存储
 
 **文件存储**
@@ -27,3 +36,7 @@
 是将数据分散存储在多台独立的设备上提高了系统的可靠性、可用性和存取效率，还易于扩展。
 
 一般分布式存储会包含文件存储、块儿存储、对象存储。如**ceph**。
+
+# 4CS程序员
+
+4CS程序员指的是cloud、cluster、container、code safe 的高级程序员
