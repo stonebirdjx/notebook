@@ -11,8 +11,7 @@
   - [:point_right:Gauge（测量值）](#point_rightgauge%E6%B5%8B%E9%87%8F%E5%80%BC)
   - [:point_right:Histogram（直方图)](#point_righthistogram%E7%9B%B4%E6%96%B9%E5%9B%BE)
   - [:point_right:Summary（摘要）](#point_rightsummary%E6%91%98%E8%A6%81)
-  - [Untyped（未指定类型）](#untyped%E6%9C%AA%E6%8C%87%E5%AE%9A%E7%B1%BB%E5%9E%8B)
-- [:point_right:PromQL](#point_rightpromql)
+- [:point_right:Query-PromQL](#point_rightquery-promql)
   - [字符串](#%E5%AD%97%E7%AC%A6%E4%B8%B2)
   - [浮点型](#%E6%B5%AE%E7%82%B9%E5%9E%8B)
   - [序列选择器](#%E5%BA%8F%E5%88%97%E9%80%89%E6%8B%A9%E5%99%A8)
@@ -20,16 +19,85 @@
     - [:point_right:范围向量选择器](#point_right%E8%8C%83%E5%9B%B4%E5%90%91%E9%87%8F%E9%80%89%E6%8B%A9%E5%99%A8)
     - [:point_right:偏移量](#point_right%E5%81%8F%E7%A7%BB%E9%87%8F)
   - [:point_right:子查询](#point_right%E5%AD%90%E6%9F%A5%E8%AF%A2)
+  - [:point_right:@ modifier](#point_right-modifier)
   - [:point_right:注释](#point_right%E6%B3%A8%E9%87%8A)
   - [运算符](#%E8%BF%90%E7%AE%97%E7%AC%A6)
-    - [:point_right:二元算术运算符号](#point_right%E4%BA%8C%E5%85%83%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6%E5%8F%B7)
-    - [:point_right:二元比较运算符](#point_right%E4%BA%8C%E5%85%83%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97%E7%AC%A6)
-    - [:point_right:逻辑运算符](#point_right%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6)
   - [矢量匹配](#%E7%9F%A2%E9%87%8F%E5%8C%B9%E9%85%8D)
     - [:point_right:一对一向量匹配](#point_right%E4%B8%80%E5%AF%B9%E4%B8%80%E5%90%91%E9%87%8F%E5%8C%B9%E9%85%8D)
     - [:point_right:多对一和一对多向量匹配](#point_right%E5%A4%9A%E5%AF%B9%E4%B8%80%E5%92%8C%E4%B8%80%E5%AF%B9%E5%A4%9A%E5%90%91%E9%87%8F%E5%8C%B9%E9%85%8D)
   - [:point_right:聚合操作](#point_right%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C)
-  - [:point_right:函数](#point_right%E5%87%BD%E6%95%B0)
+- [:point_right:函数](#point_right%E5%87%BD%E6%95%B0)
+  - [abs()-样本值都转换为其绝对值](#abs-%E6%A0%B7%E6%9C%AC%E5%80%BC%E9%83%BD%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%85%B6%E7%BB%9D%E5%AF%B9%E5%80%BC)
+  - [absent() - 判断时间序列是否存在](#absent---%E5%88%A4%E6%96%AD%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8)
+  - [:point_right:absent_over_time() -  检查某个序列的时间数据](#point_rightabsent_over_time----%E6%A3%80%E6%9F%A5%E6%9F%90%E4%B8%AA%E5%BA%8F%E5%88%97%E7%9A%84%E6%97%B6%E9%97%B4%E6%95%B0%E6%8D%AE)
+  - [ceil() - 样本值四舍五入](#ceil---%E6%A0%B7%E6%9C%AC%E5%80%BC%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5)
+  - [:point_right:changes() - 时间序列值发生变化的次数](#point_rightchanges---%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E5%80%BC%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96%E7%9A%84%E6%AC%A1%E6%95%B0)
+  - [clamp() - 指标值限制在指定的范围内](#clamp---%E6%8C%87%E6%A0%87%E5%80%BC%E9%99%90%E5%88%B6%E5%9C%A8%E6%8C%87%E5%AE%9A%E7%9A%84%E8%8C%83%E5%9B%B4%E5%86%85)
+  - [clamp_max() - 将指标值限制在最大值以下](#clamp_max---%E5%B0%86%E6%8C%87%E6%A0%87%E5%80%BC%E9%99%90%E5%88%B6%E5%9C%A8%E6%9C%80%E5%A4%A7%E5%80%BC%E4%BB%A5%E4%B8%8B)
+  - [clamp_min() - 将指标值限制在最小值以上](#clamp_min---%E5%B0%86%E6%8C%87%E6%A0%87%E5%80%BC%E9%99%90%E5%88%B6%E5%9C%A8%E6%9C%80%E5%B0%8F%E5%80%BC%E4%BB%A5%E4%B8%8A)
+  - [day_of_month()  - 时间戳所表示的日期的月份中的天数](#day_of_month----%E6%97%B6%E9%97%B4%E6%88%B3%E6%89%80%E8%A1%A8%E7%A4%BA%E7%9A%84%E6%97%A5%E6%9C%9F%E7%9A%84%E6%9C%88%E4%BB%BD%E4%B8%AD%E7%9A%84%E5%A4%A9%E6%95%B0)
+  - [day_of_week() - 时间戳中的星期几](#day_of_week---%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%AD%E7%9A%84%E6%98%9F%E6%9C%9F%E5%87%A0)
+  - [day_of_year() - 提取时间戳中的第几天](#day_of_year---%E6%8F%90%E5%8F%96%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%AD%E7%9A%84%E7%AC%AC%E5%87%A0%E5%A4%A9)
+  - [days_in_month() - 提取时间戳中的第几月](#days_in_month---%E6%8F%90%E5%8F%96%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%AD%E7%9A%84%E7%AC%AC%E5%87%A0%E6%9C%88)
+  - [:point_right:delta() - 计算时间序列的增量](#point_rightdelta---%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A2%9E%E9%87%8F)
+  - [:point_right:deriv() - 用于计算时间序列的导数](#point_rightderiv---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%AF%BC%E6%95%B0)
+  - [exp() - 计算以e的指数函数](#exp---%E8%AE%A1%E7%AE%97%E4%BB%A5e%E7%9A%84%E6%8C%87%E6%95%B0%E5%87%BD%E6%95%B0)
+  - [floor() - 向下取整](#floor---%E5%90%91%E4%B8%8B%E5%8F%96%E6%95%B4)
+  - [:point_right:histogram_count()  - 用于计算指定直方图（Histogram）中的样本数量](#point_righthistogram_count----%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%8C%87%E5%AE%9A%E7%9B%B4%E6%96%B9%E5%9B%BEhistogram%E4%B8%AD%E7%9A%84%E6%A0%B7%E6%9C%AC%E6%95%B0%E9%87%8F)
+  - [:point_right:histogram_sum() -  用于计算指定直方图（Histogram）中的样本总和](#point_righthistogram_sum----%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%8C%87%E5%AE%9A%E7%9B%B4%E6%96%B9%E5%9B%BEhistogram%E4%B8%AD%E7%9A%84%E6%A0%B7%E6%9C%AC%E6%80%BB%E5%92%8C)
+  - [:point_right:histogram_fraction() - 用于计算指定直方图（Histogram）中位于指定分位数以下的样本的比例](#point_righthistogram_fraction---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%8C%87%E5%AE%9A%E7%9B%B4%E6%96%B9%E5%9B%BEhistogram%E4%B8%AD%E4%BD%8D%E4%BA%8E%E6%8C%87%E5%AE%9A%E5%88%86%E4%BD%8D%E6%95%B0%E4%BB%A5%E4%B8%8B%E7%9A%84%E6%A0%B7%E6%9C%AC%E7%9A%84%E6%AF%94%E4%BE%8B)
+  - [histogram_quantile() - 用于计算指定直方图（Histogram）中的分位数值。](#histogram_quantile---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%8C%87%E5%AE%9A%E7%9B%B4%E6%96%B9%E5%9B%BEhistogram%E4%B8%AD%E7%9A%84%E5%88%86%E4%BD%8D%E6%95%B0%E5%80%BC)
+  - [holt_winters() - 该函数可用于对时间序列数据进行趋势和"季节性"分析](#holt_winters---%E8%AF%A5%E5%87%BD%E6%95%B0%E5%8F%AF%E7%94%A8%E4%BA%8E%E5%AF%B9%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%B6%8B%E5%8A%BF%E5%92%8C%E5%AD%A3%E8%8A%82%E6%80%A7%E5%88%86%E6%9E%90)
+  - [hour() - 返回时间戳中的小时](#hour---%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%AD%E7%9A%84%E5%B0%8F%E6%97%B6)
+  - [:point_right:idelta() - 用于计算时间序列的瞬时增量](#point_rightidelta---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E7%9E%AC%E6%97%B6%E5%A2%9E%E9%87%8F)
+  - [increase() - 用于计算时间序列的增量。](#increase---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A2%9E%E9%87%8F)
+  - [irate() - 用于计算时间序列的瞬时速率](#irate---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E7%9E%AC%E6%97%B6%E9%80%9F%E7%8E%87)
+  - [label_join() - 将给定标签的值使用指定的分隔符连接起来，生成一个新的标签值。](#label_join---%E5%B0%86%E7%BB%99%E5%AE%9A%E6%A0%87%E7%AD%BE%E7%9A%84%E5%80%BC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E7%9A%84%E5%88%86%E9%9A%94%E7%AC%A6%E8%BF%9E%E6%8E%A5%E8%B5%B7%E6%9D%A5%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E6%A0%87%E7%AD%BE%E5%80%BC)
+  - [label_replace() - 替换标签](#label_replace---%E6%9B%BF%E6%8D%A2%E6%A0%87%E7%AD%BE)
+  - [ln() - 用于计算给定表达式的自然对数](#ln---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E7%BB%99%E5%AE%9A%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E8%87%AA%E7%84%B6%E5%AF%B9%E6%95%B0)
+  - [log2() - 2 为底数](#log2---2-%E4%B8%BA%E5%BA%95%E6%95%B0)
+  - [log10() - 10为底数](#log10---10%E4%B8%BA%E5%BA%95%E6%95%B0)
+  - [minute() - 时间戳分钟](#minute---%E6%97%B6%E9%97%B4%E6%88%B3%E5%88%86%E9%92%9F)
+  - [month() - 时间戳月](#month---%E6%97%B6%E9%97%B4%E6%88%B3%E6%9C%88)
+  - [:point_right:predict_linear() - 预测未来某个时间点的数据值](#point_rightpredict_linear---%E9%A2%84%E6%B5%8B%E6%9C%AA%E6%9D%A5%E6%9F%90%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E7%9A%84%E6%95%B0%E6%8D%AE%E5%80%BC)
+  - [:point_right:rate() - 计算时间序列数据的速率](#point_rightrate---%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E9%80%9F%E7%8E%87)
+  - [resets()](#resets)
+  - [round()](#round)
+  - [scalar()](#scalar)
+  - [sgn()](#sgn)
+  - [sort()](#sort)
+  - [sort_desc()](#sort_desc)
+  - [sqrt()](#sqrt)
+  - [time()](#time)
+  - [timestamp()](#timestamp)
+  - [vector()](#vector)
+  - [year()](#year)
+  - [avg_over_time(range-vector)](#avg_over_timerange-vector)
+  - [min_over_time(range-vector)](#min_over_timerange-vector)
+  - [max_over_time(range-vector)](#max_over_timerange-vector)
+  - [sum_over_time(range-vector)](#sum_over_timerange-vector)
+  - [count_over_time(range-vector)](#count_over_timerange-vector)
+  - [quantile_over_time(scalar, range-vector)](#quantile_over_timescalar-range-vector)
+  - [stddev_over_time(range-vector)](#stddev_over_timerange-vector)
+  - [stdvar_over_time(range-vector)](#stdvar_over_timerange-vector)
+  - [last_over_time(range-vector)](#last_over_timerange-vector)
+  - [present_over_time(range-vector)](#present_over_timerange-vector)
+  - [acos(v instant-vector)](#acosv-instant-vector)
+  - [acosh(v instant-vector)](#acoshv-instant-vector)
+  - [asin(v instant-vector)](#asinv-instant-vector)
+  - [asinh(v instant-vector)](#asinhv-instant-vector)
+  - [atan(v instant-vector)](#atanv-instant-vector)
+  - [atanh(v instant-vector)](#atanhv-instant-vector)
+  - [cos(v instant-vector)](#cosv-instant-vector)
+  - [cosh(v instant-vector)](#coshv-instant-vector)
+  - [sin(v instant-vector)](#sinv-instant-vector)
+  - [sinh(v instant-vector)](#sinhv-instant-vector)
+  - [tan(v instant-vector)](#tanv-instant-vector)
+  - [tanh(v instant-vector)](#tanhv-instant-vector)
+  - [deg(v instant-vector)](#degv-instant-vector)
+  - [converts radians to degrees for all elements in v.](#converts-radians-to-degrees-for-all-elements-in-v)
+  - [pi()](#pi)
+  - [rad(v instant-vector)](#radv-instant-vector)
 - [**:point_right:HTTP** **API**](#point_righthttp-api)
   - [:point_right:健康检查](#point_right%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5)
   - [:point_right:就绪状态检测](#point_right%E5%B0%B1%E7%BB%AA%E7%8A%B6%E6%80%81%E6%A3%80%E6%B5%8B)
@@ -195,15 +263,9 @@ io_namespace_http_requests_latency_seconds_summary_count{path="/",method="GET",c
 
 **:point_right:SummaryVec（摘要向量）：与摘要类似，但可以为每个摘要指定多个标签**
 
-## Untyped（未指定类型）
+# :point_right:Query-PromQL
 
-用于存储无法归类为 Counter、Gauge、Histogram 或 Summary 的指标。
-
-
-
-# :point_right:PromQL
-
-Prometheus 提供了一种名为 PromQL(Prometheus Query Language) 的功能查询语言，使用户可以实时选择和汇总时间序列数据。，表达式的结果可以在 Prometheus 的表达式浏览器中显示为图形和表格数据
+Prometheus 提供了一种名为 PromQL(Prometheus Query Language) 的功能查询语言，使用户可以实时选择和汇总时间序列数据。表达式的结果可以在 Prometheus 的表达式浏览器中显示为图形和表格数据
 
 在 Prometheus 表达式的表达语言中，一个表达式或子表达式可以计算为以下四种类型之一：
 
@@ -250,6 +312,7 @@ http_requests_total{environment=~"staging|testing|development",method!="GET"}
 
 持续时间指定为数字，紧随其后的是以下单位之一：
 
+- `ms` - milliseconds
 - `s` - 秒
 - `m` - 分钟
 - `h` - 小时
@@ -260,6 +323,11 @@ http_requests_total{environment=~"staging|testing|development",method!="GET"}
 ```Bash
 # 我们选择在过去 5 分钟，数据指标名称为http_requests_total且job标签为prometheus的所有时间序列记录的所有值
 http_requests_total{job="prometheus"}[5m]
+
+# 5h
+# 1h30m
+# 5m
+# 10s
 ```
 
 ### :point_right:偏移量
@@ -270,6 +338,7 @@ http_requests_total{job="prometheus"}[5m]
 # 以下表达式返回相对于当前查询时间过去 5 分钟的 http_requests_total 的值：
 http_requests_total offset 5m
 sum(http_requests_total{method="GET"} offset 5m)
+# sum(http_requests_total{method="GET"}) offset 5m // INVALID.
 ```
 
 ## :point_right:子查询
@@ -278,6 +347,17 @@ sum(http_requests_total{method="GET"} offset 5m)
 rate(http_requests_total[5m])[30m:1m]
 max_over_time(deriv(rate(distance_covered_total[5s])[30s:5s])[10m:])
 ```
+
+## :point_right:@ modifier
+
+ @ modifier 允许更改查询中各个瞬时向量和范围向量的评估时间。 提供给@ modifier的时间是unix时间戳并用浮点文字描述。
+
+```bash
+sum(http_requests_total{method="GET"} @ 1609746000) // GOOD.
+sum(http_requests_total{method="GET"}) @ 1609746000 // INVALID.
+```
+
+
 
 ## :point_right:注释
 
@@ -289,33 +369,27 @@ PromQL 支持以`#`开头的行注释。 例：
 
 ## 运算符
 
-### :point_right:二元算术运算符号
+- `+` (addition)
+- `-` (subtraction)
+- `*` (multiplication)
+- `/` (division)
+- `%` (modulo)
+- `^` (power/exponentiation)
 
-Prometheus 中存在以下二元算术运算符：
-
-- `+` 加
-- `-` 减
-- `*` 乘
-- `/` 除
-- `%` 取模
-- `^` 乘方，幂
-
-### :point_right:二元比较运算符
-
-- `==` 等于
-- `!=` 不等于
-- `>`  大于
-- `<`  小于
-- `>=` 大于等于
-- `<=` 小于等于
-
-### :point_right:逻辑运算符
-
-`and` 交集
-
-`or`  并集
-
-`unless` 补集
+- `atan2` (based on https://pkg.go.dev/math#Atan2)
+- `==` (equal)
+- `!=` (not-equal)
+- `>` (greater-than)
+- `<` (less-than)
+- `>=` (greater-or-equal)
+- `<=` (less-or-equal)
+- `and` (intersection)
+- `or` (union)
+- `unless` (complement)
+- `on`
+- `ignoring`
+- `group_left`
+- `group_right`
 
 ## 矢量匹配
 
@@ -397,50 +471,413 @@ Prometheus 支持如下内置的聚合运算符，这些运算符可用于聚合
 
 `topk`和`bottomk`与其它聚合器不同之处在于将输入样本的一个子集(包括原始标签)返回到结果向量中。`by`和`without`仅用于划分输入向量。
 
-## :point_right:函数
+# :point_right:函数
 
-https://hulining.gitbook.io/prometheus/prometheus/querying/functions
+## abs()-样本值都转换为其绝对值
+
+abs(v instant-vector) 返回输入向量，其中所有样本值都转换为其绝对值。
 
 ```bash
-abs(): 取绝对值。
-avg_over_time(): 计算一段时间范围内的平均值。
-ceil(): 向上取整。
-changes(): 计算一系列数据中发生改变的次数。
-clamp_max(): 将值限制在最大值范围内。
-clamp_min(): 将值限制在最小值范围内。
-clamp(): 将值限制在一个范围内。
-count(): 计算一段时间范围内的数据样本数。
-day_of_month(): 返回时间戳所对应的日期的月份天数（1-31）。
-day_of_week(): 返回时间戳所对应的日期的星期几（0-6）。
-days_in_month(): 返回时间戳所对应的日期的当月总天数。
-delta(): 计算一段时间范围内最后两个样本值的差值。
-deriv(): 计算一段时间范围内样本值的变化率。
-exp(): 计算 e 的 x 次幂。
-floor(): 向下取整。
-histogram_quantile(): 根据直方图计算分位数。
-hour(): 返回时间戳所对应的小时数（0-23）。
-idelta(): 计算一段时间范围内最后两个样本值的差值（忽略 counter 重置）。
-increase(): 计算一段时间范围内的增量值。
-irate(): 计算一段时间范围内的瞬时变化率。
-label_join(): 将标签连接起来。
-label_replace(): 替换标签值。
-ln(): 计算自然对数。
-log10(): 计算以 10 为底的对数。
-log2(): 计算以 2 为底的对数。
-max(): 计算一段时间范围内的最大值。
-min(): 计算一段时间范围内的最小值。
-minute(): 返回时间戳所对应的分钟数（0-59）。
-month(): 返回时间戳所对应的月份（1-12）。
-predict_linear(): 基于线性回归预测未来值。
-rate(): 计算一段时间范围内的变化率。
-resets(): 计算一段时间范围内计数器被重置的次数。
-round(): 四舍五入。
-scalar(): 将标量值转换为时间序列。
-sort(): 对数据进行排序。
-sqrt(): 计算平方根
+abs(-5.2)
 ```
 
+## absent() - 判断时间序列是否存在
 
+如果该时间序列不存在，则返回一个值为 1 的时间序列；如果该时间序列存在，则返回一个空的时间序列。
+
+```bash
+absent(metric_name)
+absent(nonexistent{job="myjob"})
+# => {job="myjob"}
+absent(nonexistent{job="myjob",instance=~".*"})
+# => {job="myjob"}
+absent(sum(nonexistent{job="myjob"}))
+# => {}
+```
+
+> `absent()` 函数仅用于判断时间序列是否存在，并不会返回实际的时间序列数据。
+
+## :point_right:absent_over_time() -  检查某个序列的时间数据
+
+```bash
+absent_over_time(nonexistent{job="myjob"}[1h])
+# => {job="myjob"}
+
+absent_over_time(nonexistent{job="myjob",instance=~".*"}[1h])
+# => {job="myjob"}
+
+absent_over_time(sum(nonexistent{job="myjob"})[1h:])
+# => {}
+```
+
+`absent_over_time()` 函数通常用于检测在一段时间内是否缺少某个时间序列的数据。它可以用于告警规则中，以便在一段时间内缺少数据时触发告警。
+
+## ceil() - 样本值四舍五入
+
+ceil(v instant-vector) 将 v 中所有元素的样本值四舍五入到最接近的整数。
+
+## :point_right:changes() - 时间序列值发生变化的次数
+
+```bash
+changes(metric_name[5m])
+```
+
+`changes()` 函数返回的是一个标量值，表示值的变化次数。如果在指定时间范围内没有变化，返回值为 0。
+
+## clamp() - 指标值限制在指定的范围内
+
+```bash
+# clamp(<expression>, <min_value>, <max_value>)
+clamp(cpu_usage, 0, 100)
+```
+
+如果 `cpu_usage` 的值小于 0，返回 0；如果 `cpu_usage` 的值大于 100，返回 100。
+
+## clamp_max() - 将指标值限制在最大值以下
+
+```bash
+# clamp_max(<expression>, <max_value>)
+clamp_max(cpu_usage, 90)
+```
+
+将 `cpu_usage` 的值限制在 90 以下。如果 `cpu_usage` 的值大于 90，返回 90；否则返回原始值。
+
+## clamp_min() - 将指标值限制在最小值以上
+
+```bash
+# clamp_min(<expression>, <min_value>)
+clamp_min(cpu_usage, 0)
+```
+
+## day_of_month()  - 时间戳所表示的日期的月份中的天数
+
+```bash
+# day_of_month(<timestamp>)
+day_of_month(1622400000)
+```
+
+返回1-31
+
+## day_of_week() - 时间戳中的星期几
+
+```bash
+# day_of_week(<timestamp>)
+day_of_week(1622400000)
+```
+
+返回0-6
+
+## day_of_year() - 提取时间戳中的第几天
+
+```bash
+# day_of_year(<timestamp>)
+day_of_year(1622400000)
+```
+
+返回 1 to 365 和 1 to 366
+
+## days_in_month() - 提取时间戳中的第几月
+
+```bash
+# days_in_month(<timestamp>)
+days_in_month(1622400000)
+```
+
+返回 1 to 12
+
+## :point_right:delta() - 计算时间序列的增量
+
+```bash
+# delta(<expression>[, <time_range>])
+delta(cpu_temp_celsius{host="zeus"}[2h])
+```
+
+它可以帮助您了解指标随时间的变化情况，比如某个指标在一段时间内的增长量或速率。
+
+## :point_right:deriv() - 用于计算时间序列的导数
+
+```bash
+# deriv(<expression>[, <time_range>])
+deriv(metric_name[5m])
+```
+
+它通过计算时间序列在给定时间范围内的斜率来估计时间序列的变化速率。它可以用于监控系统的性能、流量、请求速率等指标的变化情况。
+
+## exp() - 计算以e的指数函数
+
+`exp(x)` 的计算方式是将参数 `x` 作为指数，计算 e 的 x 次幂。
+
+```bash
+exp(2)
+```
+
+## floor() - 向下取整
+
+```bash
+floor(3.8)  # 结果是 3
+```
+
+## :point_right:histogram_count()  - 用于计算指定直方图（Histogram）中的样本数量
+
+```bash
+histogram_count(http_request_duration_seconds)
+```
+
+如计数器（Counter）或计量器（Gauge），使用 `count` 函数来获取样本数量。
+
+## :point_right:histogram_sum() -  用于计算指定直方图（Histogram）中的样本总和
+
+```bash
+histogram_sum(http_request_duration_seconds)
+```
+
+对于其他类型的指标，如计数器（Counter）或计量器（Gauge），使用 `sum` 函数来获取样本总和。
+
+## :point_right:histogram_fraction() - 用于计算指定直方图（Histogram）中位于指定分位数以下的样本的比例
+
+比例
+
+```bash
+histogram_fraction(histogram_metric{label="value"}, 0.95) # 0.95是bucket的值域
+```
+
+## histogram_quantile() - 用于计算指定直方图（Histogram）中的分位数值。
+
+值
+
+```bash
+histogram_quantile(0.95, histogram_metric{label="value"})
+```
+
+## holt_winters() - 该函数可用于对时间序列数据进行趋势和"季节性"分析
+
+```bash
+holt_winters(v range-vector, seasonality float, trend float, smooth float)
+
+```
+
+- `v range-vector`：要进行预测的时间序列数据，可以是一个瞬时向量或范围向量。
+- `seasonality float`：季节性周期的长度，用于描述数据的季节性变化。例如，**如果数据呈现每周循环的季节性**，则可以指定为 7。
+- `trend float`：趋势参数，用于调整预测结果的趋势。
+- `smooth float`：平滑参数，用于控制数据的平滑程度。
+
+```bash
+holt_winters(my_metric{job="example"}, 7, 0.1, 0.1)
+```
+
+## hour() - 返回时间戳中的小时
+
+```bash
+# hour(timestamp)
+```
+
+返回0-23
+
+## :point_right:idelta() - 用于计算时间序列的瞬时增量
+
+```bash
+idelta(my_metric{job="my_job"})
+```
+
+对于具有非递增性质的数据，如温度、压力等，使用 `idelta()` 函数可能不会得到准确的结果。
+
+## increase() - 用于计算时间序列的增量。
+
+它可用于估计时间序列在指定时间范围内的总增量。
+
+```bash
+# increase(vector [duration])
+increase(my_metric{job="my_job"}[5m])
+```
+
+对于非递增的时间序列，如温度、压力等，使用 `increase()` 函数可能会得到不准确的结果。
+
+## irate() - 用于计算时间序列的瞬时速率
+
+```bash
+# irate(vector [duration])
+irate(my_metric{job="my_job"}[5m])
+```
+
+对于非递增的时间序列，如温度、压力等，使用 `irate()` 函数可能会得到不准确的结果。
+
+## label_join() - 将给定标签的值使用指定的分隔符连接起来，生成一个新的标签值。
+
+```bash
+label_join(my_metric{job="my_job"}, "_", "instance", "region", "zone")
+```
+
+## label_replace() - 替换标签
+
+```bash
+label_replace(http_requests_total, "status_code", "$1", "status_code", "200")
+label_replace(<result_from_previous_step>, "status_code", "Not Found", "status_code", "404")
+
+```
+
+## ln() - 用于计算给定表达式的自然对数
+
+（即以 e 为底的对数）。
+
+```bash
+ln(10)
+```
+
+## log2() - 2 为底数
+
+```bash
+log2(8)
+```
+
+## log10() - 10为底数
+
+```bash
+log10(10)
+```
+
+## minute() - 时间戳分钟
+
+```bash
+minute(1629106200)
+```
+
+0 to 59
+
+## month() - 时间戳月
+
+```bash
+month(1629106200)
+```
+
+ 1 to 12
+
+## :point_right:predict_linear() - 预测未来某个时间点的数据值
+
+基于线性回归模型对时间序列数据进行预测
+
+```bash
+predict_linear(metric[1h], 1h)
+```
+
+## :point_right:rate() - 计算时间序列数据的速率
+
+```bash
+rate(metric[10s])
+# rate(sum(metric[1m])[5m])
+```
+
+速率的单位为数据点每秒（即数据点/s）
+
+## resets()
+## round()
+## scalar()
+## sgn()
+## sort()
+## sort_desc()
+## sqrt()
+## time()
+## timestamp()
+## vector()
+## year()
+## avg_over_time(range-vector)
+
+the average value of all points in the specified interval.
+
+## min_over_time(range-vector)
+
+the minimum value of all points in the specified interval.
+
+## max_over_time(range-vector)
+
+ the maximum value of all points in the specified interval.
+
+## sum_over_time(range-vector)
+
+the sum of all values in the specified interval.
+
+## count_over_time(range-vector)
+
+ the count of all values in the specified interval.
+
+## quantile_over_time(scalar, range-vector)
+
+the φ-quantile (0 ≤ φ ≤ 1) of the values in the specified interval.
+
+## stddev_over_time(range-vector)
+
+the population standard deviation of the values in the specified interval.
+
+## stdvar_over_time(range-vector)
+
+the population standard variance of the values in the specified interval.
+
+## last_over_time(range-vector)
+
+the most recent point value in the specified interval.
+
+## present_over_time(range-vector)
+
+the value 1 for any series in the specified interval.
+
+## acos(v instant-vector)
+
+calculates the arccosine of all elements in v (special cases).
+
+## acosh(v instant-vector)
+
+calculates the inverse hyperbolic cosine of all elements in v (special cases).
+
+## asin(v instant-vector)
+
+calculates the arcsine of all elements in v (special cases).
+
+## asinh(v instant-vector)
+
+ calculates the inverse hyperbolic sine of all elements in v (special cases).
+
+## atan(v instant-vector)
+
+ calculates the arctangent of all elements in v (special cases).
+
+## atanh(v instant-vector)
+
+calculates the inverse hyperbolic tangent of all elements in v (special cases).
+
+## cos(v instant-vector)
+
+calculates the cosine of all elements in v (special cases).
+
+## cosh(v instant-vector)
+
+calculates the hyperbolic cosine of all elements in v (special cases).
+
+## sin(v instant-vector)
+
+calculates the sine of all elements in v (special cases).
+
+## sinh(v instant-vector)
+
+calculates the hyperbolic sine of all elements in v (special cases).
+
+## tan(v instant-vector)
+
+calculates the tangent of all elements in v (special cases).
+
+## tanh(v instant-vector)
+
+calculates the hyperbolic tangent of all elements in v (special cases).
+
+## deg(v instant-vector)
+
+## converts radians to degrees for all elements in v.
+
+## pi()
+
+returns pi.
+
+## rad(v instant-vector)
+
+converts degrees to radians for all elements in v.
 
 # **:point_right:HTTP** **API**
 
