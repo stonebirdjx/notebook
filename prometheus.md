@@ -61,27 +61,27 @@
   - [month() - 时间戳月](#month---%E6%97%B6%E9%97%B4%E6%88%B3%E6%9C%88)
   - [:point_right:predict_linear() - 预测未来某个时间点的数据值](#point_rightpredict_linear---%E9%A2%84%E6%B5%8B%E6%9C%AA%E6%9D%A5%E6%9F%90%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E7%9A%84%E6%95%B0%E6%8D%AE%E5%80%BC)
   - [:point_right:rate() - 计算时间序列数据的速率](#point_rightrate---%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E9%80%9F%E7%8E%87)
-  - [resets()](#resets)
-  - [round()](#round)
-  - [scalar()](#scalar)
-  - [sgn()](#sgn)
-  - [sort()](#sort)
-  - [sort_desc()](#sort_desc)
-  - [sqrt()](#sqrt)
-  - [time()](#time)
-  - [timestamp()](#timestamp)
-  - [vector()](#vector)
-  - [year()](#year)
-  - [avg_over_time(range-vector)](#avg_over_timerange-vector)
-  - [min_over_time(range-vector)](#min_over_timerange-vector)
-  - [max_over_time(range-vector)](#max_over_timerange-vector)
-  - [sum_over_time(range-vector)](#sum_over_timerange-vector)
-  - [count_over_time(range-vector)](#count_over_timerange-vector)
-  - [quantile_over_time(scalar, range-vector)](#quantile_over_timescalar-range-vector)
-  - [stddev_over_time(range-vector)](#stddev_over_timerange-vector)
-  - [stdvar_over_time(range-vector)](#stdvar_over_timerange-vector)
-  - [last_over_time(range-vector)](#last_over_timerange-vector)
-  - [present_over_time(range-vector)](#present_over_timerange-vector)
+  - [resets() - 用于计算时间序列数据中重置（即突然归零）的次数](#resets---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E4%B8%AD%E9%87%8D%E7%BD%AE%E5%8D%B3%E7%AA%81%E7%84%B6%E5%BD%92%E9%9B%B6%E7%9A%84%E6%AC%A1%E6%95%B0)
+  - [round() - 四舍五入为最接近的整数](#round---%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5%E4%B8%BA%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E6%95%B4%E6%95%B0)
+  - [:point_right:scalar() - 获取变量值](#point_rightscalar---%E8%8E%B7%E5%8F%96%E5%8F%98%E9%87%8F%E5%80%BC)
+  - [sgn() - 判断正负](#sgn---%E5%88%A4%E6%96%AD%E6%AD%A3%E8%B4%9F)
+  - [sort() - 返回按样本值升序排序的向量元素](#sort---%E8%BF%94%E5%9B%9E%E6%8C%89%E6%A0%B7%E6%9C%AC%E5%80%BC%E5%8D%87%E5%BA%8F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%90%91%E9%87%8F%E5%85%83%E7%B4%A0)
+  - [sort_desc() - 进行降序排序](#sort_desc---%E8%BF%9B%E8%A1%8C%E9%99%8D%E5%BA%8F%E6%8E%92%E5%BA%8F)
+  - [sort_desc() - 返回每个样本值的平方根](#sort_desc---%E8%BF%94%E5%9B%9E%E6%AF%8F%E4%B8%AA%E6%A0%B7%E6%9C%AC%E5%80%BC%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9)
+  - [time() - 获取当前服务器时间的时间戳](#time---%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E9%97%B4%E7%9A%84%E6%97%B6%E9%97%B4%E6%88%B3)
+  - [timestamp() - 日期时间字符串转换为对应的时间戳](#timestamp---%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E5%BA%94%E7%9A%84%E6%97%B6%E9%97%B4%E6%88%B3)
+  - [vector() - 标量当做向量返回](#vector---%E6%A0%87%E9%87%8F%E5%BD%93%E5%81%9A%E5%90%91%E9%87%8F%E8%BF%94%E5%9B%9E)
+  - [year() - 提取年份](#year---%E6%8F%90%E5%8F%96%E5%B9%B4%E4%BB%BD)
+  - [:point_right:avg_over_time(range-vector) - 用于计算时间范围内时间序列数据的平均值](#point_rightavg_over_timerange-vector---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E5%B9%B3%E5%9D%87%E5%80%BC)
+  - [:point_right:min_over_time(range-vector) -用于计算时间范围内时间序列数据的最小值。](#point_rightmin_over_timerange-vector--%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9C%80%E5%B0%8F%E5%80%BC)
+  - [:point_right:max_over_time(range-vector)-用于计算时间范围内时间序列数据的最大值。](#point_rightmax_over_timerange-vector-%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC)
+  - [:point_right:sum_over_time(range-vector) - 用于计算时间范围内时间序列数据的总和](#point_rightsum_over_timerange-vector---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%80%BB%E5%92%8C)
+  - [:point_right:count_over_time(range-vector)- 用于计算时间范围内时间序列数据的计数](#point_rightcount_over_timerange-vector--%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E8%AE%A1%E6%95%B0)
+  - [:point_right:quantile_over_time(scalar, range-vector) - 用于计算时间范围内时间序列数据的分位数](#point_rightquantile_over_timescalar-range-vector---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E4%BD%8D%E6%95%B0)
+  - [stddev_over_time(range-vector) - 用于计算时间范围内时间序列数据的标准差](#stddev_over_timerange-vector---%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%A0%87%E5%87%86%E5%B7%AE)
+  - [stdvar_over_time(range-vector) - 是用于计算时间范围内时间序列数据的方差的函数](#stdvar_over_timerange-vector---%E6%98%AF%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%B7%AE%E7%9A%84%E5%87%BD%E6%95%B0)
+  - [:point_right:last_over_time(range-vector) -用于获取指定时间范围内每个时间点的时间序列数据的最后一个值](#point_rightlast_over_timerange-vector--%E7%94%A8%E4%BA%8E%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E6%AF%8F%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E7%9A%84%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%80%BC)
+  - [:point_right:present_over_time(range-vector) -指定时间范围内的时间序列是否存在值。](#point_rightpresent_over_timerange-vector--%E6%8C%87%E5%AE%9A%E6%97%B6%E9%97%B4%E8%8C%83%E5%9B%B4%E5%86%85%E7%9A%84%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E5%80%BC)
   - [acos(v instant-vector)](#acosv-instant-vector)
   - [acosh(v instant-vector)](#acoshv-instant-vector)
   - [asin(v instant-vector)](#asinv-instant-vector)
@@ -95,7 +95,6 @@
   - [tan(v instant-vector)](#tanv-instant-vector)
   - [tanh(v instant-vector)](#tanhv-instant-vector)
   - [deg(v instant-vector)](#degv-instant-vector)
-  - [converts radians to degrees for all elements in v.](#converts-radians-to-degrees-for-all-elements-in-v)
   - [pi()](#pi)
   - [rad(v instant-vector)](#radv-instant-vector)
 - [**:point_right:HTTP** **API**](#point_righthttp-api)
@@ -768,56 +767,151 @@ rate(metric[10s])
 
 速率的单位为数据点每秒（即数据点/s）
 
-## resets()
-## round()
-## scalar()
-## sgn()
-## sort()
-## sort_desc()
-## sqrt()
-## time()
-## timestamp()
-## vector()
-## year()
-## avg_over_time(range-vector)
+## resets() - 用于计算时间序列数据中重置（即突然归零）的次数
 
-the average value of all points in the specified interval.
+```bash
+resets(metric)
+```
 
-## min_over_time(range-vector)
+ counters and counter-like native histograms.
 
-the minimum value of all points in the specified interval.
+## round() - 四舍五入为最接近的整数
 
-## max_over_time(range-vector)
+```bash
+round(expression)
+```
 
- the maximum value of all points in the specified interval.
+## :point_right:scalar() - 获取变量值
 
-## sum_over_time(range-vector)
+```bash
+scalar(metric)
+# scalar(rate(metric[5m]))
+```
 
-the sum of all values in the specified interval.
+- 如果向量表达式返回多个时间序列，`scalar` 函数将只返回第一个时间序列的标量值。
+- 如果向量表达式为空或没有样本值，`scalar` 函数将返回 NaN
 
-## count_over_time(range-vector)
+ 标量表示**值，** 矢量表示**位置，** 张量表示**整个空间。**
 
- the count of all values in the specified interval.
+单值比较：`scalar` 函数还可用于将向量表达式的标量值与其他标量值进行比较。例如，您可以使用 `scalar` 函数提取一个时间序列的标量值，并与预定义的阈值进行比较，以确定是否触发警报或采取其他操作。
 
-## quantile_over_time(scalar, range-vector)
+## sgn() - 判断正负
+
+```bash
+sgn(metric)
+```
+
+sgn(v instant-vector) 返回一个向量，其中所有样本值都转换为其符号，定义如下：如果 v 为正，则为 1；如果 v 为负，则为 -1；如果 v 等于 0，则为 0。
+
+## sort() - 返回按样本值升序排序的向量元素
+
+histograms are sorted by their sum of observations.
+
+```bash
+# sort(vector_expression, sort_order="asc", sort_by="value", label="label_name") 命令待测试
+sort(metric)
+```
+
+## sort_desc() - 进行降序排序
+
+```bash
+sort_desc(vector_expression)
+```
+
+## sort_desc() - 返回每个样本值的平方根
+
+```bash
+sort_desc(vector_expression)
+```
+
+## time() - 获取当前服务器时间的时间戳
+
+```bash
+time()
+```
+
+## timestamp() - 日期时间字符串转换为对应的时间戳
+
+```bash
+timestamp("2022-01-01T12:00:00Z")
+```
+
+## vector() - 标量当做向量返回
+
+vector(s scalar) 将标量 s 作为不带标签的向量返回。
+
+## year() - 提取年份
+
+```bash
+year(timestamp) 
+```
+
+## :point_right:avg_over_time(range-vector) - 用于计算时间范围内时间序列数据的平均值
+
+```bash
+avg_over_time(metric_name[5m])
+```
+
+您可以对时间范围内的时间序列数据进行平均值计算，以便进行数据分析、趋势观察和报警等操作。
+
+## :point_right:min_over_time(range-vector) -用于计算时间范围内时间序列数据的最小值。
+
+```bash
+min_over_time(metric_name[5m])
+```
+
+## :point_right:max_over_time(range-vector)-用于计算时间范围内时间序列数据的最大值。
+
+ ```bash
+ min_over_time(metric_name[5m])
+ ```
+
+## :point_right:sum_over_time(range-vector) - 用于计算时间范围内时间序列数据的总和
+
+```bash
+sum_over_time(metric_name[5m])
+```
+
+## :point_right:count_over_time(range-vector)- 用于计算时间范围内时间序列数据的计数
+
+```bash
+count_over_time(metric_name[5m])
+```
+
+## :point_right:quantile_over_time(scalar, range-vector) - 用于计算时间范围内时间序列数据的分位数
 
 the φ-quantile (0 ≤ φ ≤ 1) of the values in the specified interval.
 
-## stddev_over_time(range-vector)
+```bash
+#quantile_over_time(quantile, range vector)
+quantile_over_time(0.5, metric_name[5m])
+```
 
-the population standard deviation of the values in the specified interval.
+> `[5m]` 表示过去5分钟的时间范围。`quantile_over_time` 函数将计算该时间范围内 `metric_name` 指标的中位数，并返回一个时间序列向量。
 
-## stdvar_over_time(range-vector)
+## stddev_over_time(range-vector) - 用于计算时间范围内时间序列数据的标准差
 
-the population standard variance of the values in the specified interval.
+```bash
+stddev_over_time(metric_name[5m])
+```
 
-## last_over_time(range-vector)
+## stdvar_over_time(range-vector) - 是用于计算时间范围内时间序列数据的方差的函数
 
-the most recent point value in the specified interval.
+```bash
+stdvar_over_time(metric_name[5m])
+```
 
-## present_over_time(range-vector)
+## :point_right:last_over_time(range-vector) -用于获取指定时间范围内每个时间点的时间序列数据的最后一个值
 
-the value 1 for any series in the specified interval.
+```bash
+last_over_time(metric_name[5m])
+```
+
+## :point_right:present_over_time(range-vector) -指定时间范围内的时间序列是否存在值。
+
+```bash
+present_over_time(metric_name[5m])
+```
 
 ## acos(v instant-vector)
 
@@ -869,7 +963,7 @@ calculates the hyperbolic tangent of all elements in v (special cases).
 
 ## deg(v instant-vector)
 
-## converts radians to degrees for all elements in v.
+converts radians to degrees for all elements in v.
 
 ## pi()
 
